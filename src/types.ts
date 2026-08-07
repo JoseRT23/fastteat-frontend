@@ -1,11 +1,12 @@
-export type UserRole = 'ADMIN' | 'EMPLOYEE' | 'CUSTOMER'
+export type UserRole = 'ADMIN' | 'OWNER' | 'STAFF' | 'EMPLOYEE' | 'CUSTOMER'
 
-export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'DELIVERED' | 'CANCELLED'
+export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'ACCEPTED' | 'CANCELLED' | 'DELIVERED'
 
-export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED'
+export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'CANCELLED'
 
 export interface Product {
   product_id: string
+  business_id?: string
   name: string
   description: string
   current_price: number
@@ -24,13 +25,16 @@ export interface OrderItem {
 
 export interface Order {
   order_id: string
-  user_id: string
-  customerName: string
-  business_id: string
+  user_id?: string
+  customerName?: string
+  business_id?: string
   status: OrderStatus
   total: number
   created_at: string
   items: OrderItem[]
+  user?: {
+    name: string
+  }
 }
 
 export interface BusinessUser {
@@ -46,4 +50,13 @@ export interface Invitation {
   email: string
   role: UserRole
   status: InvitationStatus
+}
+
+export interface Business {
+  business_id: string
+  name: string
+  address?: string | null
+  menu_url?: string | null
+  mobile?: string
+  email?: string
 }

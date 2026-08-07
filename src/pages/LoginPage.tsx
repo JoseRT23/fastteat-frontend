@@ -1,16 +1,18 @@
 import { useState, type FormEvent } from 'react'
 
 interface LoginPageProps {
-  onLogin: (email: string, password: string) => void
+  onLogin: (email: string, password: string) => Promise<void>
+  error: string | null
+  isLoading: boolean
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
+export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
   const [email, setEmail] = useState('manager@fastteat.com')
   const [password, setPassword] = useState('fastteat123')
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onLogin(email, password)
+    await onLogin(email, password)
   }
 
   return (
@@ -45,8 +47,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             />
           </label>
 
-          <button className="mt-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700" type="submit">
-            Entrar al panel
+          {error ? <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p> : null}
+          <button className="mt-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400" type="submit" disabled={isLoading}>
+            {isLoading ? 'Entrando…' : 'Entrar al panel'}
           </button>
         </form>
       </div>

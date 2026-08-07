@@ -94,7 +94,7 @@ export const mockOrders: Order[] = [
     user_id: 'usr-2',
     customerName: 'Luis García',
     business_id: 'biz-1',
-    status: 'IN_PROGRESS',
+    status: 'ACCEPTED',
     total: 10.8,
     created_at: '2026-07-12T11:00:00.000Z',
     items: [

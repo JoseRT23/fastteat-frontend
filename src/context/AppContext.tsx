@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { setStoredToken, getStoredToken } from '../api/client'
+import { apiService } from '../services/apiService'
 import type { Product } from '../types'
 
 interface CartItem extends Product {
@@ -7,39 +9,33 @@ interface CartItem extends Product {
 
 interface AppContextValue {
   isAuthenticated: boolean
-  login: (email: string, password: string) => void
+  login: (email: string, password: string) => Promise<void>
   logout: () => void
   cart: CartItem[]
   addToCart: (product: Product) => void
   removeFromCart: (productId: string) => void
   clearCart: () => void
   cartCount: number
+  authError: string | null
+  isLoading: boolean
 }
 
 const AppContext = createContext<AppContextValue | undefined>(undefined)
 
 const CART_STORAGE_KEY = 'fastteat-cart'
-const USER_STORAGE_KEY = 'fastteat-user'
 
 export function AppContextProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window === 'undefined') return false
-    return Boolean(window.localStorage.getItem(USER_STORAGE_KEY))
+    return Boolean(getStoredToken())
   })
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return []
     const stored = window.localStorage.getItem(CART_STORAGE_KEY)
     return stored ? JSON.parse(stored) : []
   })
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (isAuthenticated) {
-      window.localStorage.setItem(USER_STORAGE_KEY, 'session-active')
-    } else {
-      window.localStorage.removeItem(USER_STORAGE_KEY)
-    }
-  }, [isAuthenticated])
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -47,15 +43,39 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     }
   }, [cart])
 
-  const login = (email: string, password: string) => {
-    if (email && password) {
+  const login = async (email: string, password: string) => {
+    if (!email || !password) {
+      setAuthError('Completa tus credenciales para entrar.')
+      return
+    }
+
+    setIsLoading(true)
+    setAuthError(null)
+
+    try {
+      const response = await apiService.login(email, password)
+      const token = response.token
+
+      if (!token) {
+        throw new Error('No se recibió un token válido')
+      }
+
+      setStoredToken(token)
       setIsAuthenticated(true)
+    } catch (error) {
+      setStoredToken(null)
+      setIsAuthenticated(false)
+      setAuthError(error instanceof Error ? error.message : 'No se pudo iniciar sesión')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const logout = () => {
+    setStoredToken(null)
     setIsAuthenticated(false)
     setCart([])
+    setAuthError(null)
   }
 
   const addToCart = (product: Product) => {
@@ -87,7 +107,9 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     removeFromCart,
     clearCart,
     cartCount,
-  }), [isAuthenticated, cart, cartCount])
+    authError,
+    isLoading,
+  }), [isAuthenticated, cart, cartCount, authError, isLoading])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

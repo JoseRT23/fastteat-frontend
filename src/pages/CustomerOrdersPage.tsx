@@ -8,6 +8,7 @@ const statusLabelMap: Record<Order['status'], string> = {
   PENDING: 'Pendiente',
   IN_PROGRESS: 'En preparación',
   READY: 'Listo',
+  ACCEPTED: 'Aceptado',
   DELIVERED: 'Entregado',
   CANCELLED: 'Cancelado',
 }

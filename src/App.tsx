@@ -16,14 +16,14 @@ import { UsersPage } from './pages/UsersPage'
 import type { Order, Product } from './types'
 
 function App() {
-  const { isAuthenticated, login, logout, cart, addToCart, removeFromCart, clearCart, cartCount } = useAppContext()
+  const { isAuthenticated, login, logout, cart, addToCart, removeFromCart, clearCart, cartCount, authError, isLoading } = useAppContext()
   const [selectedBusinessId, setSelectedBusinessId] = useState<string | null>('biz-1')
   const [orders, setOrders] = useState<Order[]>(mockOrders)
 
   const currentUser = isAuthenticated ? mockUsers[0] : null
 
-  const handleLogin = (_email: string, _password: string) => {
-    login(_email, _password)
+  const handleLogin = async (_email: string, _password: string) => {
+    await login(_email, _password)
   }
 
   const handleLogout = () => {
@@ -51,10 +51,6 @@ function App() {
     setOrders((currentOrders) => currentOrders.map((order) => (order.order_id === orderId ? { ...order, status } : order)))
   }
 
-  if (!isAuthenticated) {
-    return <LoginPage onLogin={handleLogin} />
-  }
-
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/explore" replace />} />
@@ -62,14 +58,18 @@ function App() {
       <Route
         path="/business/*"
         element={
-          <Layout currentUser={currentUser} onLogout={handleLogout}>
-            <Routes>
-              <Route path="dashboard" element={<DashboardPage products={mockProducts} orders={orders} users={mockUsers} />} />
-              <Route path="products" element={<ProductsPage products={mockProducts} />} />
-              <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
-              <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
-            </Routes>
-          </Layout>
+          isAuthenticated ? (
+            <Layout currentUser={currentUser} onLogout={handleLogout}>
+              <Routes>
+                <Route path="dashboard" element={<DashboardPage products={mockProducts} orders={orders} users={mockUsers} />} />
+                <Route path="products" element={<ProductsPage products={mockProducts} />} />
+                <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
+                <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
+              </Routes>
+            </Layout>
+          ) : (
+            <LoginPage onLogin={handleLogin} error={authError} isLoading={isLoading} />
+          )
         }
       />
 
@@ -79,8 +79,7 @@ function App() {
           <CustomerLayout cartCount={cartCount}>
             <Routes>
               <Route path="explore" element={<CustomerExplorePage onSelectBusiness={handleSelectBusiness} />} />
-              <Route
-                path="products"
+              <Route path="products"
                 element={
                   <CustomerProductsPage
                     businessId={selectedBusinessId}
@@ -89,8 +88,7 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="checkout"
+              <Route path="checkout"
                 element={
                   <CustomerCheckoutPage
                     cart={cart}
