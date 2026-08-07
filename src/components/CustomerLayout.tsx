@@ -65,7 +65,7 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                 <circle cx="16" cy="18" r="1.5" fill="currentColor" stroke="none" />
               </svg>
               {cartCount > 0 ? (
-                <span className="ml-1 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                <span className="ml-1 rounded-full bg-amber-500 px-2 py-0.5 text-[12px] font-bold text-white">
                   {cartCount}
                 </span>
               ) : null}
