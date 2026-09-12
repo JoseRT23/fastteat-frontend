@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Modal } from '../components/Modal'
+import { Badge, Button, PageHeader } from '../components/ui'
 import type { Product } from '../types'
 
 interface ProductsPageProps {
@@ -74,36 +75,30 @@ export function ProductsPage({ products }: ProductsPageProps) {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Catálogo</span>
-          <h2 className="text-2xl font-bold text-slate-900">Productos</h2>
-        </div>
-        <button onClick={openCreateModal} className="rounded-xl bg-blue-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-blue-700">
-          Nuevo producto
-        </button>
-      </div>
+      <PageHeader
+        eyebrow="Catálogo"
+        title="Productos"
+        actions={<Button onClick={openCreateModal}>Nuevo producto</Button>}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {productList.map((product) => (
           <article className="overflow-hidden rounded-2xl bg-white shadow-sm shadow-slate-200/60 cursor-pointer hover:bg-slate-100" key={product.product_id} onClick={() => openEditModal(product)}>
-            <div className="flex aspect-[16/10] items-center justify-center bg-slate-100">
+            <div className="flex aspect-[16/10] items-center justify-center bg-neutral-100">
               {product.image ? (
                 <img className="h-full w-full object-cover" src={product.image} alt={product.name} />
               ) : (
-                <span className="text-sm text-slate-500">Sin imagen</span>
+                <span className="text-sm text-neutral-500">Sin imagen</span>
               )}
             </div>
             <div className="space-y-3 p-4">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold text-slate-900">{product.name}</h3>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${product.active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
-                  {product.active ? 'Activo' : 'Inactivo'}
-                </span>
+                <h2 className="text-lg font-semibold text-neutral-900">{product.name}</h2>
+                <Badge variant={product.active ? 'success' : 'neutral'}>{product.active ? 'Activo' : 'Inactivo'}</Badge>
               </div>
-              <p className="text-sm text-slate-500">{product.description}</p>
+              <p className="text-sm text-neutral-500">{product.description}</p>
               <div className="flex items-center justify-between gap-3">
-                <strong className="text-base font-bold text-slate-900">{product.current_price.toFixed(2)} €</strong>
+                <strong className="text-base font-bold text-neutral-900">{product.current_price.toFixed(2)} €</strong>
               </div>
             </div>
           </article>

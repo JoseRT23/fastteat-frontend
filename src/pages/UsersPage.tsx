@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Modal } from '../components/Modal'
+import { Badge, Button, FormField, PageHeader } from '../components/ui'
 import type { BusinessUser, Invitation, UserRole } from '../types'
 
 interface UsersPageProps {
@@ -86,48 +87,44 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Colaboración</span>
-          <h2 className="text-2xl font-bold text-slate-900">Usuarios e invitaciones</h2>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button onClick={() => setInviteModalOpen(true)} className="rounded-xl bg-blue-600 px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-blue-700">
-            Invitar usuario
-          </button>
-          <button onClick={() => openCreateUserModal()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
-            Crear usuario
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Colaboración"
+        title="Usuarios e invitaciones"
+        actions={
+          <>
+            <Button onClick={() => setInviteModalOpen(true)}>Invitar usuario</Button>
+            <Button variant="secondary" onClick={openCreateUserModal}>Crear usuario</Button>
+          </>
+        }
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <article className="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/60">
-          <h3 className="mb-3 text-lg font-semibold text-slate-900">Usuarios del negocio</h3>
+        <article className="rounded-lg bg-white p-5 shadow-sm">
+          <h2 className="mb-3 text-lg font-semibold text-neutral-900">Usuarios del negocio</h2>
           <ul className="grid gap-3">
             {userList.map((user) => (
-              <li key={user.user_id} className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3 cursor-pointer hover:bg-slate-100" 
+              <li key={user.user_id} className="flex cursor-pointer items-center justify-between gap-3 rounded-md bg-neutral-50 p-3 hover:bg-neutral-100"
                   onClick={() => openEditUserModal(user)}>
                 <div>
-                  <strong className="block text-sm text-slate-900">{user.name}</strong>
-                  <small className="text-xs text-slate-500">{user.email}</small>
+                  <strong className="block text-sm text-neutral-900">{user.name}</strong>
+                  <small className="text-xs text-neutral-500">{user.email}</small>
                 </div>
-                <span className="text-xs font-semibold text-slate-700">{user.role}</span>
+                <Badge>{user.role}</Badge>
               </li>
             ))}
           </ul>
         </article>
 
-        <article className="rounded-2xl bg-white p-5 shadow-sm shadow-slate-200/60">
-          <h3 className="mb-3 text-lg font-semibold text-slate-900">Invitaciones</h3>
+        <article className="rounded-lg bg-white p-5 shadow-sm">
+          <h2 className="mb-3 text-lg font-semibold text-neutral-900">Invitaciones</h2>
           <ul className="grid gap-3">
             {invitationList.map((invitation) => (
-              <li key={invitation.invitation_id} className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3">
+              <li key={invitation.invitation_id} className="flex items-center justify-between gap-3 rounded-md bg-neutral-50 p-3">
                 <div>
-                  <strong className="block text-sm text-slate-900">{invitation.email}</strong>
-                  <small className="text-xs text-slate-500">{invitation.role}</small>
+                  <strong className="block text-sm text-neutral-900">{invitation.email}</strong>
+                  <small className="text-xs text-neutral-500">{invitation.role}</small>
                 </div>
-                <span className="text-xs font-semibold text-slate-700">{invitation.status}</span>
+                <Badge variant={invitation.status === 'PENDING' ? 'warning' : 'neutral'}>{invitation.status}</Badge>
               </li>
             ))}
           </ul>
@@ -136,20 +133,20 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
 
       <Modal open={inviteModalOpen} title="Invitar usuario" onClose={closeInviteModal}>
         <form className="grid gap-4" onSubmit={handleInviteSubmit}>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Email</span>
+          <FormField id="invite-email" label="Email">
             <input
-              className="rounded-xl border border-slate-200 px-3 py-2"
+              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              id="invite-email"
               type="email"
               value={inviteDraft.email}
               onChange={(event) => setInviteDraft((current) => ({ ...current, email: event.target.value }))}
               required
             />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Rol</span>
+          </FormField>
+          <FormField id="invite-role" label="Rol">
             <select
-              className="rounded-xl border border-slate-200 px-3 py-2"
+              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              id="invite-role"
               value={inviteDraft.role}
               onChange={(event) => setInviteDraft((current) => ({ ...current, role: event.target.value as UserRole }))}
             >
@@ -157,43 +154,39 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
               <option value="CUSTOMER">CUSTOMER</option>
               <option value="ADMIN">ADMIN</option>
             </select>
-          </label>
+          </FormField>
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={closeInviteModal} className="rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700">
-              Cancelar
-            </button>
-            <button type="submit" className="rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white">
-              Guardar invitación
-            </button>
+            <Button type="button" variant="secondary" onClick={closeInviteModal}>Cancelar</Button>
+            <Button type="submit">Guardar invitación</Button>
           </div>
         </form>
       </Modal>
 
       <Modal open={isModalOpen} title="Crear usuario" onClose={() => setIsModalOpen(false)}>
         <form className="grid gap-4" onSubmit={handleCreateUserSubmit}>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Nombre</span>
+          <FormField id="user-name" label="Nombre">
             <input
-              className="rounded-xl border border-slate-200 px-3 py-2"
+              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              id="user-name"
               value={userDraft.name}
               onChange={(event) => setUserDraft((current) => ({ ...current, name: event.target.value }))}
               required
             />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Email</span>
+          </FormField>
+          <FormField id="user-email" label="Email">
             <input
-              className="rounded-xl border border-slate-200 px-3 py-2"
+              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              id="user-email"
               type="email"
               value={userDraft.email}
               onChange={(event) => setUserDraft((current) => ({ ...current, email: event.target.value }))}
               required
             />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Rol</span>
+          </FormField>
+          <FormField id="user-role" label="Rol">
             <select
-              className="rounded-xl border border-slate-200 px-3 py-2"
+              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              id="user-role"
               value={userDraft.role}
               onChange={(event) => setUserDraft((current) => ({ ...current, role: event.target.value as UserRole }))}
             >
@@ -201,14 +194,10 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
               <option value="CUSTOMER">CUSTOMER</option>
               <option value="ADMIN">ADMIN</option>
             </select>
-          </label>
+          </FormField>
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={closeCreateUserModal} className="rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700">
-              Cancelar
-            </button>
-            <button type="submit" className="rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white">
-              Guardar usuario
-            </button>
+            <Button type="button" variant="secondary" onClick={closeCreateUserModal}>Cancelar</Button>
+            <Button type="submit">Guardar usuario</Button>
           </div>
         </form>
       </Modal>

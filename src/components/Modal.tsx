@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Button } from './ui'
 
 interface ModalProps {
   open: boolean
@@ -11,13 +12,13 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-6">
-      <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-secondary-950/50 px-4 py-6" role="presentation">
+      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-lg" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-xl font-bold text-slate-900">{title}</h3>
-          <button className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700" onClick={onClose}>
+          <h2 id="modal-title" className="text-xl font-bold text-neutral-900">{title}</h2>
+          <Button variant="secondary" size="sm" onClick={onClose}>
             Cerrar
-          </button>
+          </Button>
         </div>
         {children}
       </div>
