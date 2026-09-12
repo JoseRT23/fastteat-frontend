@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Badge, IconButton } from './ui'
+import { MotionIcon } from 'motion-icons-react';
 
 interface CustomerLayoutProps {
   children: ReactNode
@@ -60,11 +61,19 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
               }
               aria-label={`Ir al carrito, ${cartCount} artículos`}
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+              {/* <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <path d="M3 4h2l2 10h9l2-7H7" strokeLinecap="round" strokeLinejoin="round" />
                 <circle cx="10" cy="18" r="1.5" fill="currentColor" stroke="none" />
                 <circle cx="16" cy="18" r="1.5" fill="currentColor" stroke="none" />
-              </svg>
+              </svg> */}
+            
+              <MotionIcon
+                name="ShoppingCart"
+                animation="tada"
+                trigger="click"
+                interactive  // 👈 Añade esto para habilitar los triggers de clic/hover
+                onClick={() => console.log('Añadido al carrito')} // 👈 Opcional, pero recomendado
+              />
               {cartCount > 0 ? (
                 <Badge variant="warning" className="ml-1 px-2 py-0.5 text-[12px]">
                   {cartCount}
