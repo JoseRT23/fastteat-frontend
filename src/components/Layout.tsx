@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
+import { Button } from './ui'
 import type { BusinessUser } from '../types'
 
 interface LayoutProps {
@@ -17,11 +18,11 @@ const navItems = [
 
 export function Layout({ children, currentUser, onLogout }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-slate-100 lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="flex flex-col justify-between gap-8 bg-slate-950 p-6 text-white lg:min-h-screen">
+    <div className="min-h-screen bg-neutral-100 lg:grid lg:grid-cols-[260px_1fr]">
+      <aside className="flex flex-col justify-between gap-8 bg-secondary-950 p-6 text-white lg:min-h-screen">
         <div>
           <div className="mb-2 text-2xl font-black">FasTTeat</div>
-          <p className="text-sm text-slate-300">Panel del negocio</p>
+          <p className="text-sm text-neutral-300">Panel del negocio</p>
         </div>
 
         <nav className="grid gap-2">
@@ -31,10 +32,10 @@ export function Layout({ children, currentUser, onLogout }: LayoutProps) {
               to={item.to}
               className={({ isActive }) =>
                 [
-                  'rounded-xl px-3 py-2 text-sm font-medium transition',
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive
                     ? 'bg-white/15 text-white'
-                    : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                    : 'text-neutral-300 hover:bg-white/10 hover:text-white',
                 ].join(' ')
               }
             >
@@ -45,10 +46,10 @@ export function Layout({ children, currentUser, onLogout }: LayoutProps) {
 
         <div className="grid gap-2 border-t border-white/15 pt-4 text-sm">
           <strong>{currentUser?.name ?? 'Usuario'}</strong>
-          <span className="text-slate-300">{currentUser?.role ?? 'ADMIN'}</span>
-          <button className="rounded-xl bg-transparent px-0 py-2 text-left font-semibold text-white" onClick={onLogout}>
+          <span className="text-neutral-300">{currentUser?.role ?? 'ADMIN'}</span>
+          <Button variant="ghost" className="justify-start px-0 !text-white hover:bg-white/10" onClick={onLogout}>
             Cerrar sesión
-          </button>
+          </Button>
         </div>
       </aside>
 

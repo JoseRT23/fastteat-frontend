@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Button, FormField } from '../components/ui'
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => Promise<void>
@@ -16,41 +17,41 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-sky-100 p-6">
-      <div className="w-full max-w-xl rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/70">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 p-6">
+      <div className="w-full max-w-xl rounded-xl bg-white p-8 shadow-lg">
         <div className="mb-6 space-y-3">
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">FastTeat</span>
-          <h1 className="text-3xl font-bold text-slate-900">Inicia sesión para administrar tu negocio</h1>
-          <p className="text-sm text-slate-500">Tu dashboard central para gestionar productos, pedidos y usuarios.</p>
+          <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-primary-600">FastTeat</span>
+          <h1 className="text-3xl font-bold text-neutral-900">Inicia sesión para administrar tu negocio</h1>
+          <p className="text-sm text-neutral-500">Tu dashboard central para gestionar productos, pedidos y usuarios.</p>
         </div>
 
         <form className="grid gap-4" onSubmit={handleSubmit}>
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Email</span>
+          <FormField id="email" label="Email">
             <input
-              className="rounded-xl border border-slate-200 px-4 py-3 outline-none ring-0 transition focus:border-blue-500"
+              className="rounded-md border border-neutral-200 px-4 py-3 outline-none transition focus:border-primary-500"
+              id="email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="manager@fastteat.com"
             />
-          </label>
+          </FormField>
 
-          <label className="grid gap-2 text-sm font-medium text-slate-700">
-            <span>Contraseña</span>
+          <FormField id="password" label="Contraseña">
             <input
-              className="rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+              className="rounded-md border border-neutral-200 px-4 py-3 outline-none transition focus:border-primary-500"
+              id="password"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="••••••••"
             />
-          </label>
+          </FormField>
 
-          {error ? <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p> : null}
-          <button className="mt-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400" type="submit" disabled={isLoading}>
+          {error ? <p className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger-600" role="alert">{error}</p> : null}
+          <Button className="mt-2" size="lg" type="submit" disabled={isLoading}>
             {isLoading ? 'Entrando…' : 'Entrar al panel'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

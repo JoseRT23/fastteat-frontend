@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
+import { Badge, IconButton } from './ui'
 
 interface CustomerLayoutProps {
   children: ReactNode
@@ -17,12 +18,12 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
   const menuLinks = navItems.filter((item) => item.to !== '/checkout')
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div className="min-h-screen bg-neutral-100">
+      <header className="border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
           <div>
-            <div className="text-lg font-black text-slate-900">FasTTeat</div>
-            <div className="hidden text-xs text-slate-500 md:block">Ordena desde tu negocio favorito</div>
+            <div className="text-lg font-black text-neutral-900">FasTTeat</div>
+            <div className="hidden text-xs text-neutral-500 md:block">Ordena desde tu negocio favorito</div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -37,8 +38,8 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                     to={item.to}
                     className={({ isActive }) =>
                       [
-                        'rounded-full px-3 py-2 text-sm font-semibold transition',
-                        isActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+                        'rounded-pill px-3 py-2 text-sm font-semibold transition-colors',
+                        isActive ? 'bg-secondary-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                       ].join(' ')
                     }
                   >
@@ -53,8 +54,8 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
                 [
-                  'relative inline-flex items-center justify-center rounded-full p-2.5 transition',
-                  isActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+                  'relative inline-flex items-center justify-center rounded-pill p-2.5 transition-colors',
+                  isActive ? 'bg-secondary-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                 ].join(' ')
               }
               aria-label={`Ir al carrito, ${cartCount} artículos`}
@@ -65,29 +66,29 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                 <circle cx="16" cy="18" r="1.5" fill="currentColor" stroke="none" />
               </svg>
               {cartCount > 0 ? (
-                <span className="ml-1 rounded-full bg-amber-500 px-2 py-0.5 text-[12px] font-bold text-white">
+                <Badge variant="warning" className="ml-1 px-2 py-0.5 text-[12px]">
                   {cartCount}
-                </span>
+                </Badge>
               ) : null}
             </NavLink>
 
-            <button
+            <IconButton
               type="button"
-              className="inline-flex items-center justify-center rounded-full bg-slate-100 p-2.5 text-slate-700 transition hover:bg-slate-200 md:hidden"
+              className="md:hidden"
               onClick={() => setMenuOpen((prev) => !prev)}
-              aria-label="Abrir menú"
+              label="Abrir menú"
               aria-expanded={menuOpen}
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
               </svg>
-            </button>
+            </IconButton>
 
           </div>
         </div>
 
         {menuOpen ? (
-          <div className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+          <div className="border-t border-neutral-200 bg-white px-4 py-3 md:hidden">
             <nav className="flex flex-col gap-2">
               {menuLinks.map((item) => (
                 <NavLink
@@ -96,8 +97,8 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
                     [
-                      'rounded-full px-3 py-2 text-sm font-semibold transition',
-                      isActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+                      'rounded-pill px-3 py-2 text-sm font-semibold transition-colors',
+                      isActive ? 'bg-secondary-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                     ].join(' ')
                   }
                 >
