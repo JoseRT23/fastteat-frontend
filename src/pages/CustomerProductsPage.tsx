@@ -1,4 +1,5 @@
 import type { Product } from '../types'
+import { PageHeader } from '../components/ui/PageHeader'
 
 interface CustomerProductsPageProps {
   businessId: string | null
@@ -7,13 +8,7 @@ interface CustomerProductsPageProps {
 }
 
 export function CustomerProductsPage({ businessId, products, onAddToCart }: CustomerProductsPageProps) {
-  return (
-    <section className="space-y-6">
-      <div className="rounded-3xl bg-white p-5 shadow-sm shadow-slate-200/60">
-        <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Catálogo</span>
-        <h2 className="text-2xl font-bold text-slate-900">Productos del negocio</h2>
-        <p className="text-sm text-slate-500">Negocio seleccionado: {businessId ?? 'Sin selección'}</p>
-      </div>
+  return ( <section className="space-y-6"> <PageHeader eyebrow="Catálogo" title="Productos del negocio" description={`Negocio seleccionado: ${businessId ?? 'Sin selección'}`} />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {products.map((product) => (
@@ -33,11 +28,11 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
               <div className="flex items-center justify-between gap-3">
                 <strong className="text-base font-semibold text-slate-900">{product.current_price.toFixed(2)} €</strong>
                 <button
-                  onClick={() => onAddToCart(product)}
-                  className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                >
-                  Añadir
-                </button>
+  onClick={() => onAddToCart(product)}
+  className="cursor-pointer rounded-xl bg-secondary-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:brightness-200 hover:shadow-md"
+>
+  Añadir
+</button>
               </div>
             </div>
           </article>

@@ -30,7 +30,7 @@ export function CustomerCheckoutPage({ cart, onRemoveFromCart, onPlaceOrder }: C
                   </div>
                   <button
                     onClick={() => onRemoveFromCart(product.product_id)}
-                    className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600"
+                    className="cursor-pointer rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600"
                   >
                     Quitar
                   </button>
@@ -48,7 +48,7 @@ export function CustomerCheckoutPage({ cart, onRemoveFromCart, onPlaceOrder }: C
           </div>
           <button
             onClick={onPlaceOrder}
-            className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
+            className="w-full cursor-pointer rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
           >
             Confirmar pedido
           </button>
