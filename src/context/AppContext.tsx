@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { setStoredToken, getStoredToken } from '../api/client'
 import { apiService } from '../services/apiService'
 import type { Product } from '../types'
 
@@ -25,10 +24,7 @@ const AppContext = createContext<AppContextValue | undefined>(undefined)
 const CART_STORAGE_KEY = 'fastteat-cart'
 
 export function AppContextProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return Boolean(getStoredToken())
-  })
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return []
     const stored = window.localStorage.getItem(CART_STORAGE_KEY)
@@ -43,6 +39,12 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     }
   }, [cart])
 
+  useEffect(() => {
+    apiService.getCurrentUser()
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false))
+  }, [])  
+
   const login = async (email: string, password: string) => {
     if (!email || !password) {
       setAuthError('Completa tus credenciales para entrar.')
@@ -53,17 +55,9 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     setAuthError(null)
 
     try {
-      const response = await apiService.login(email, password)
-      const token = response.token
-
-      if (!token) {
-        throw new Error('No se recibió un token válido')
-      }
-
-      setStoredToken(token)
+      await apiService.login(email, password)
       setIsAuthenticated(true)
     } catch (error) {
-      setStoredToken(null)
       setIsAuthenticated(false)
       setAuthError(error instanceof Error ? error.message : 'No se pudo iniciar sesión')
     } finally {
@@ -72,7 +66,6 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    setStoredToken(null)
     setIsAuthenticated(false)
     setCart([])
     setAuthError(null)
