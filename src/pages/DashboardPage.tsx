@@ -42,7 +42,7 @@ export function DashboardPage({ products, orders, users }: DashboardPageProps) {
           </ul>
         </article>
 
-        <article className="rounded-lg bg-white p-5 shadow-sm">
+        <article className=" rounded-lg bg-white p-5 shadow-sm">
           <h2 className="mb-3 text-lg font-semibold text-neutral-900">Productos destacados</h2>
           <ul className="grid gap-3">
             {products.slice(0, 3).map((product) => (

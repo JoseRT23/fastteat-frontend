@@ -115,7 +115,7 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
           </ul>
         </article>
 
-        <article className="rounded-lg bg-white p-5 shadow-sm">
+        <article className="cursor-pointer rounded-lg bg-white p-5 shadow-sm">
           <h2 className="mb-3 text-lg font-semibold text-neutral-900">Invitaciones</h2>
           <ul className="grid gap-3">
             {invitationList.map((invitation) => (
@@ -132,7 +132,7 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
       </div>
 
       <Modal open={inviteModalOpen} title="Invitar usuario" onClose={closeInviteModal}>
-        <form className="grid gap-4" onSubmit={handleInviteSubmit}>
+        <form className="cursor-pointer grid gap-4" onSubmit={handleInviteSubmit}>
           <FormField id="invite-email" label="Email">
             <input
               className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
@@ -145,7 +145,7 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
           </FormField>
           <FormField id="invite-role" label="Rol">
             <select
-              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              className=" cursor-pointer rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
               id="invite-role"
               value={inviteDraft.role}
               onChange={(event) => setInviteDraft((current) => ({ ...current, role: event.target.value as UserRole }))}
@@ -185,7 +185,7 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
           </FormField>
           <FormField id="user-role" label="Rol">
             <select
-              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              className=" cursor-pointer rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
               id="user-role"
               value={userDraft.role}
               onChange={(event) => setUserDraft((current) => ({ ...current, role: event.target.value as UserRole }))}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { PageHeader } from '../components/ui/PageHeader'
 
 interface Business {
   business_id: string
@@ -46,21 +47,7 @@ export function CustomerExplorePage({ onSelectBusiness }: CustomerExplorePagePro
     navigate('/products')
   }
 
-  return (
-    <section className="space-y-6">
-      <div className="rounded-3xl bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="mb-4">
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">Buscar negocio</span>
-          <h2 className="text-2xl font-bold text-slate-900">Explora negocios cercanos</h2>
-        </div>
-
-        <input
-          className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
-          placeholder="Busca por nombre o dirección"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
-      </div>
+  return ( <section className="space-y-6"> <PageHeader eyebrow="Buscar negocio" title="Explora negocios cercanos" description="Busca un negocio por nombre o dirección." actions={ <input className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 md:w-80" placeholder="Busca por nombre o dirección" value={search} onChange={(event) => setSearch(event.target.value)} /> } />
 
       <div className="grid gap-4 md:grid-cols-2">
         {filteredBusinesses.map((business) => (

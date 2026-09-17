@@ -78,41 +78,71 @@ export function ProductsPage({ products }: ProductsPageProps) {
       <PageHeader
         eyebrow="Catálogo"
         title="Productos"
-        actions={<Button onClick={openCreateModal}>Nuevo producto</Button>}
+        actions={
+          <Button
+            onClick={openCreateModal}
+            className="rounded-full px-5 hover:brightness-125 hover:shadow-lg"
+          >
+            Nuevo producto
+          </Button>
+        }
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {productList.map((product) => (
-          <article className="overflow-hidden rounded-2xl bg-white shadow-sm shadow-slate-200/60 cursor-pointer hover:bg-slate-100" key={product.product_id} onClick={() => openEditModal(product)}>
+          <article
+            className="overflow-hidden rounded-2xl bg-white shadow-sm shadow-slate-200/60 cursor-pointer hover:bg-slate-100"
+            key={product.product_id}
+            onClick={() => openEditModal(product)}
+          >
             <div className="flex aspect-[16/10] items-center justify-center bg-neutral-100">
               {product.image ? (
-                <img className="h-full w-full object-cover" src={product.image} alt={product.name} />
+                <img
+                  className="h-full w-full object-cover"
+                  src={product.image}
+                  alt={product.name}
+                />
               ) : (
                 <span className="text-sm text-neutral-500">Sin imagen</span>
               )}
             </div>
             <div className="space-y-3 p-4">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-neutral-900">{product.name}</h2>
-                <Badge variant={product.active ? 'success' : 'neutral'}>{product.active ? 'Activo' : 'Inactivo'}</Badge>
+                <h2 className="text-lg font-semibold text-neutral-900">
+                  {product.name}
+                </h2>
+                <Badge variant={product.active ? "success" : "neutral"}>
+                  {product.active ? "Activo" : "Inactivo"}
+                </Badge>
               </div>
               <p className="text-sm text-neutral-500">{product.description}</p>
               <div className="flex items-center justify-between gap-3">
-                <strong className="text-base font-bold text-neutral-900">{product.current_price.toFixed(2)} €</strong>
+                <strong className="text-base font-bold text-neutral-900">
+                  {product.current_price.toFixed(2)} €
+                </strong>
               </div>
             </div>
           </article>
         ))}
       </div>
 
-      <Modal open={isModalOpen} title={editingProduct ? 'Editar producto' : 'Crear producto'} onClose={closeModal}>
+      <Modal
+        open={isModalOpen}
+        title={editingProduct ? "Editar producto" : "Crear producto"}
+        onClose={closeModal}
+      >
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <label className="grid gap-2 text-sm font-medium text-slate-700">
             <span>Nombre</span>
             <input
               className="rounded-xl border border-slate-200 px-3 py-2"
               value={draft.name}
-              onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  name: event.target.value,
+                }))
+              }
               required
             />
           </label>
@@ -121,7 +151,12 @@ export function ProductsPage({ products }: ProductsPageProps) {
             <textarea
               className="min-h-24 rounded-xl border border-slate-200 px-3 py-2"
               value={draft.description}
-              onChange={(event) => setDraft((current) => ({ ...current, description: event.target.value }))}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  description: event.target.value,
+                }))
+              }
               required
             />
           </label>
@@ -132,28 +167,51 @@ export function ProductsPage({ products }: ProductsPageProps) {
               type="number"
               step="0.01"
               value={draft.current_price}
-              onChange={(event) => setDraft((current) => ({ ...current, current_price: event.target.value }))}
+              onChange={(event) =>
+                setDraft((current) => ({
+                  ...current,
+                  current_price: event.target.value,
+                }))
+              }
               required
             />
           </label>
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-            <input
-              type="checkbox"
-              checked={draft.active}
-              onChange={(event) => setDraft((current) => ({ ...current, active: event.target.checked }))}
-            />
-            Producto activo
+          <label className="flex items-center justify-between text-sm font-medium text-slate-700">
+            <span>Estado del producto</span>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={draft.active}
+              onClick={() =>
+                setDraft((current) => ({
+                  ...current,
+                  active: !current.active,
+                }))
+              }
+              className={`relative h-6 w-12 rounded-full transition-colors ${
+                draft.active ? "bg-success-700" : "bg-slate-300"
+              }`}
+            >
+              <span
+                className={` cursor-pointer absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+                  draft.active ? "translate-x-6" : "translate-x-0"
+                }`}
+              />
+            </button>
           </label>
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={closeModal} className="rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700">
+            <button
+              type="button"
+              onClick={closeModal}
+              className=" cursor-pointer rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-700"
+            >
               Cancelar
             </button>
-            <button type="submit" className="rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white">
-              Guardar
-            </button>
+            <Button type="submit">Guardar</Button>
           </div>
         </form>
       </Modal>
     </section>
-  )
+  );
 }
