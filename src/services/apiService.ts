@@ -16,6 +16,13 @@ export interface ApiEnvelope<T> {
   totalPages: number
 }
 
+export interface User {
+  user_id: string
+  name: string
+  email: string
+  business_id?: string
+}
+
 function normalizeOrderStatus(status: Order['status']): Order['status'] {
   if (status === 'IN_PROGRESS' || status === 'READY') {
     return 'ACCEPTED'
@@ -31,6 +38,10 @@ export const apiService = {
       body: JSON.stringify({ email, password }),
     })
   },
+
+  async getCurrentUser() {
+    return apiRequest<{ user: User }>('/auth/me')
+  },  
 
   async businessLogin(email: string, password: string, businessId: string) {
     return apiRequest<LoginResponse>('/auth/business-login', {
