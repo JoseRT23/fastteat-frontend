@@ -65,6 +65,7 @@ function App() {
                 <Route path="products" element={<ProductsPage products={mockProducts} />} />
                 <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
                 <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
+                <Route path="*" element={<Navigate to="/business/dashboard" replace />} />
               </Routes>
             </Layout>
           ) : (
@@ -98,6 +99,7 @@ function App() {
                 }
               />
               <Route path="my-orders" element={<CustomerOrdersPage orders={orders} />} />
+              <Route path="*" element={<Navigate to="/explore" replace />} />
             </Routes>
           </CustomerLayout>
         }
