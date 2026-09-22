@@ -14,6 +14,7 @@ import { OrdersPage } from './pages/OrdersPage'
 import { ProductsPage } from './pages/ProductsPage'
 import { UsersPage } from './pages/UsersPage'
 import type { Order, Product } from './types'
+import { RegisterPage } from './pages/RegisterPage'
 
 function App() {
   const { isAuthenticated, login, logout, cart, addToCart, removeFromCart, clearCart, cartCount, authError, isLoading } = useAppContext()
@@ -58,18 +59,43 @@ function App() {
       <Route
         path="/business/*"
         element={
-          isAuthenticated ? (
-            <Layout currentUser={currentUser} onLogout={handleLogout}>
-              <Routes>
-                <Route path="dashboard" element={<DashboardPage products={mockProducts} orders={orders} users={mockUsers} />} />
-                <Route path="products" element={<ProductsPage products={mockProducts} />} />
-                <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
-                <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
-              </Routes>
-            </Layout>
-          ) : (
-            <LoginPage onLogin={handleLogin} error={authError} isLoading={isLoading} />
-          )
+          <Routes>
+            <Route path="login" element={
+                isAuthenticated ? (
+                  <Navigate to="/business/dashboard" replace />
+                ) : (
+                  <LoginPage onLogin={handleLogin} error={authError} isLoading={isLoading} />
+                )
+              }
+            />
+            <Route path="register" element={
+                isAuthenticated ? (
+                  <Navigate to="/business/dashboard" replace />
+                ) : (
+                  <RegisterPage />
+                )
+              }
+            />
+            <Route
+              path="*"
+              element={
+                isAuthenticated ? (
+                  <Layout currentUser={currentUser} onLogout={handleLogout}>
+                    <Routes>
+                      <Route path="dashboard" element={<DashboardPage products={mockProducts} orders={orders} users={mockUsers} />} />
+                      <Route path="products" element={<ProductsPage products={mockProducts} />} />
+                      <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
+                      <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
+                      <Route path="register" element={<RegisterPage />} />
+                      <Route path="*" element={<Navigate to="/business/dashboard" replace />} />
+                    </Routes>
+                  </Layout>
+                ) : (
+                  <Navigate to="/business/login" replace />
+                )
+              }
+            />
+          </Routes>
         }
       />
 
@@ -98,6 +124,7 @@ function App() {
                 }
               />
               <Route path="my-orders" element={<CustomerOrdersPage orders={orders} />} />
+              <Route path="*" element={<Navigate to="/explore" replace />} />
             </Routes>
           </CustomerLayout>
         }
