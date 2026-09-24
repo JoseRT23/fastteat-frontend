@@ -40,7 +40,7 @@ export const apiService = {
   },
 
   async getCurrentUser() {
-    return apiRequest<{ user: User }>('/auth/me')
+    return apiRequest<User>('/auth/me')
   },  
 
   async businessLogin(email: string, password: string, businessId: string) {
@@ -114,5 +114,19 @@ export const apiService = {
 
   async getBusinesses() {
     return apiRequest<ApiEnvelope<Business>>('/business')
+  },
+  
+  async checkBusinessRegistrationEmail(email: string) {
+    return apiRequest<{ exists: boolean }>(`/business/check-user?email=${encodeURIComponent(email)}`)
+  },
+  
+  async registerBusiness(payload: {
+    user: { email: string; name?: string; phone?: string; password?: string }
+    business: { name: string; email: string; mobile: string; address?: string }
+  }) {
+    return apiRequest<{ business: Business; user_id: string }>('/business/register', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
   },
 }

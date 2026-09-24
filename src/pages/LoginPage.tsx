@@ -1,17 +1,17 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { Button, FormField } from '../components/ui'
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => Promise<void>
-  error: string | null
-  isLoading: boolean
+  loginError : string | null
+  isLoginLoading: boolean
 }
 
-export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
+export function LoginPage({ onLogin, loginError , isLoginLoading }: LoginPageProps) {
   const [email, setEmail] = useState('manager@fastteat.com')
   const [password, setPassword] = useState('fastteat123')
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     await onLogin(email, password)
   }
@@ -48,10 +48,16 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
             />
           </FormField>
 
-          {error ? <p className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger-600" role="alert">{error}</p> : null}
-          <Button className="mt-2" size="lg" type="submit" disabled={isLoading}>
-            {isLoading ? 'Entrando…' : 'Entrar al panel'}
+          {loginError  ? <p className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger-600" role="alert">{loginError }</p> : null}
+          <Button className="mt-2" size="lg" type="submit" disabled={isLoginLoading}>
+            {isLoginLoading ? 'Entrando…' : 'Entrar al panel'}
           </Button>
+
+          <div className="text-center space-y-3">
+            <p className="text-sm text-neutral-500">No tienes una cuenta?
+              <a href="/business/register" className="font-medium text-primary-600 hover:text-primary-500"> Regístrate aquí</a>
+            </p>
+          </div>
         </form>
       </div>
     </div>

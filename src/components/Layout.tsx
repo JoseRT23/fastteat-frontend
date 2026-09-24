@@ -5,7 +5,7 @@ import type { BusinessUser } from '../types'
 
 interface LayoutProps {
   children: ReactNode
-  currentUser: BusinessUser | null
+  currentUser: BusinessUser | undefined
   onLogout: () => void
 }
 
@@ -46,7 +46,8 @@ export function Layout({ children, currentUser, onLogout }: LayoutProps) {
 
         <div className="grid gap-2 border-t border-white/15 pt-4 text-sm">
           <strong>{currentUser?.name ?? 'Usuario'}</strong>
-          <span className="text-neutral-300">{currentUser?.role ?? 'ADMIN'}</span>
+          {/* <span className="text-neutral-300">{currentUser?.role ?? 'ADMIN'}</span> */}
+          <span className="text-neutral-300">{'ADMIN'}</span>
           <Button variant="ghost" className="justify-start px-0 !text-white hover:bg-white/10" onClick={onLogout}>
             Cerrar sesión
           </Button>
