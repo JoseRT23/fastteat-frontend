@@ -17,11 +17,9 @@ import type { Order, Product } from './types'
 import { RegisterPage } from './pages/RegisterPage'
 
 function App() {
-  const { isAuthenticated, login, logout, cart, addToCart, removeFromCart, clearCart, cartCount, authError, isLoading } = useAppContext()
+  const { isAuthenticated, currentUser, login, logout, cart, addToCart, removeFromCart, clearCart, cartCount, loginError, isLoginLoading } = useAppContext()
   const [selectedBusinessId, setSelectedBusinessId] = useState<string | null>('biz-1')
   const [orders, setOrders] = useState<Order[]>(mockOrders)
-
-  const currentUser = isAuthenticated ? mockUsers[0] : null
 
   const handleLogin = async (_email: string, _password: string) => {
     await login(_email, _password)
@@ -64,7 +62,7 @@ function App() {
                 isAuthenticated ? (
                   <Navigate to="/business/dashboard" replace />
                 ) : (
-                  <LoginPage onLogin={handleLogin} error={authError} isLoading={isLoading} />
+                  <LoginPage onLogin={handleLogin} loginError={loginError} isLoginLoading={isLoginLoading} />
                 )
               }
             />
@@ -86,7 +84,6 @@ function App() {
                       <Route path="products" element={<ProductsPage products={mockProducts} />} />
                       <Route path="orders" element={<OrdersPage orders={orders} onUpdateOrderStatus={handleUpdateOrderStatus} />} />
                       <Route path="users" element={<UsersPage users={mockUsers} invitations={mockInvitations} />} />
-                      <Route path="register" element={<RegisterPage />} />
                       <Route path="*" element={<Navigate to="/business/dashboard" replace />} />
                     </Routes>
                   </Layout>
