@@ -38,11 +38,11 @@ export interface Order {
 }
 
 export interface BusinessUser {
-  // user_id: string
+  user_id: string
   name: string
   email: string
-  // role: UserRole
-  // active: boolean
+  role: UserRole
+  active: boolean
 }
 
 export interface Invitation {
@@ -59,4 +59,5 @@ export interface Business {
   menu_url?: string | null
   mobile?: string
   email?: string
+  image?: string | null
 }
