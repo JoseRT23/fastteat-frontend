@@ -56,7 +56,7 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
               className={({ isActive }) =>
                 [
                   'relative inline-flex items-center justify-center rounded-pill p-2.5 transition-colors',
-                  isActive ? 'bg-secondary-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
+                  (isActive || cartCount > 0) ? 'bg-secondary-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200',
                 ].join(' ')
               }
               aria-label={`Ir al carrito, ${cartCount} artículos`}
@@ -75,7 +75,7 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                 onClick={() => console.log('Añadido al carrito')} // 👈 Opcional, pero recomendado
               />
               {cartCount > 0 ? (
-                <Badge variant="warning" className="ml-1 px-2 py-0.5 text-[12px]">
+                <Badge variant="neutral" className="ml-1 px-2 py-0.5 text-[12px]">
                   {cartCount}
                 </Badge>
               ) : null}
