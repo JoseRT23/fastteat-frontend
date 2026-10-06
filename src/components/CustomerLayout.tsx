@@ -6,6 +6,7 @@ import { MotionIcon } from 'motion-icons-react';
 interface CustomerLayoutProps {
   children: ReactNode
   cartCount: number
+  isAuthenticated: boolean
 }
 
 const navItems = [
@@ -14,9 +15,10 @@ const navItems = [
   { to: '/my-orders', label: 'Mis pedidos' },
 ]
 
-export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
+export function CustomerLayout({ children, cartCount, isAuthenticated }: CustomerLayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const menuLinks = navItems.filter((item) => item.to !== '/checkout')
+  const visibleNavItems = navItems.filter((item) => item.to !== '/my-orders' || isAuthenticated)
+  const menuLinks = visibleNavItems.filter((item) => item.to !== '/checkout')
 
   return (
     <div className="min-h-screen bg-neutral-100">
@@ -30,7 +32,13 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
           <div className="flex items-center gap-2">
 
             <nav className="hidden items-center gap-2 md:flex">
-              {navItems.map((item) => {
+              {isAuthenticated && (
+                <MotionIcon
+                  className="mr-2 h-6 w-6 text-neutral-700 cursor-pointer"
+                  name="UserCircle"
+                />
+              )}
+              {visibleNavItems.map((item) => {
                 const label = item.to === '/checkout' ? `Carrito (${cartCount})` : item.label
 
                 return (
@@ -48,6 +56,24 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                   </NavLink>
                 )
               })}
+              {!isAuthenticated ? (
+                <>
+                  <NavLink
+                    to="/login"
+                    className="rounded-pill px-3 py-2 text-sm font-semibold bg-neutral-100 text-neutral-700 transition-colors"
+                  >
+                    Iniciar sesión
+                  </NavLink>
+                  <NavLink
+                    to="/register"
+                    className="rounded-pill bg-secondary-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-secondary-950"
+                  >
+                    Crear cuenta
+                  </NavLink>
+                </>
+              ) : 
+                null
+              }
             </nav>
 
             <NavLink
@@ -61,18 +87,13 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
               }
               aria-label={`Ir al carrito, ${cartCount} artículos`}
             >
-              {/* <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M3 4h2l2 10h9l2-7H7" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="10" cy="18" r="1.5" fill="currentColor" stroke="none" />
-                <circle cx="16" cy="18" r="1.5" fill="currentColor" stroke="none" />
-              </svg> */}
             
               <MotionIcon
                 name="ShoppingCart"
                 animation="tada"
                 trigger="click"
-                interactive  // 👈 Añade esto para habilitar los triggers de clic/hover
-                onClick={() => console.log('Añadido al carrito')} // 👈 Opcional, pero recomendado
+                interactive
+                onClick={() => console.log('Añadido al carrito')}
               />
               {cartCount > 0 ? (
                 <Badge variant="neutral" className="ml-1 px-2 py-0.5 text-[12px]">
@@ -114,6 +135,24 @@ export function CustomerLayout({ children, cartCount }: CustomerLayoutProps) {
                   {item.label}
                 </NavLink>
               ))}
+              {!isAuthenticated ? (
+                <>
+                  <NavLink
+                    to="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-pill px-3 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-100"
+                  >
+                    Iniciar sesión
+                  </NavLink>
+                  <NavLink
+                    to="/register"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-pill bg-secondary-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-secondary-950"
+                  >
+                    Crear cuenta
+                  </NavLink>
+                </>
+              ) : null}
             </nav>
           </div>
         ) : null}

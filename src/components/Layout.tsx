@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Button } from './ui'
-import type { BusinessUser } from '../types'
+import type { User } from '../services/apiService'
 
 interface LayoutProps {
   children: ReactNode
-  currentUser: BusinessUser | undefined
+  currentUser: User | undefined
   onLogout: () => void
 }
 

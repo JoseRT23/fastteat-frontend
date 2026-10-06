@@ -15,8 +15,10 @@ import {
 
 import { CustomerCheckoutPage } from './pages/CustomerCheckoutPage'
 import { CustomerExplorePage } from './pages/CustomerExplorePage'
+import { CustomerLoginPage } from './pages/CustomerLoginPage'
 import { CustomerOrdersPage } from './pages/CustomerOrdersPage'
 import { CustomerProductsPage } from './pages/CustomerProductsPage'
+import { CustomerRegisterPage } from './pages/CustomerRegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
 import { OrdersPage } from './pages/OrdersPage'
@@ -32,6 +34,7 @@ function App() {
     isAuthenticated,
     currentUser,
     login,
+    businessLogin,
     logout,
     cart,
     addToCart,
@@ -51,7 +54,15 @@ function App() {
     email: string,
     password: string,
   ) => {
-    await login(email, password)
+    return login(email, password)
+  }
+
+  const handleBusinessLogin = async (
+    email: string,
+    password: string,
+    businessId?: string,
+  ) => {
+    return businessLogin(email, password, businessId)
   }
 
   const handleLogout = () => {
@@ -106,14 +117,14 @@ function App() {
             <Route
               path="login"
               element={
-                isAuthenticated ? (
+                isAuthenticated && currentUser?.business_id ? (
                   <Navigate
                     to="/business/dashboard"
                     replace
                   />
                 ) : (
                   <LoginPage
-                    onLogin={handleLogin}
+                    onLogin={handleBusinessLogin}
                     loginError={loginError}
                     isLoginLoading={isLoginLoading}
                   />
@@ -220,8 +231,21 @@ function App() {
       <Route
         path="/*"
         element={
-          <CustomerLayout cartCount={cartCount}>
+          <CustomerLayout cartCount={cartCount} isAuthenticated={isAuthenticated}>
             <Routes>
+              <Route
+                path="login"
+                element={
+                  <CustomerLoginPage
+                    onLogin={handleLogin}
+                    loginError={loginError}
+                    isLoginLoading={isLoginLoading}
+                  />
+                }
+              />
+
+              <Route path="register" element={<CustomerRegisterPage />} />
+
               {/* Explorar negocios */}
               <Route
                 path="explore"

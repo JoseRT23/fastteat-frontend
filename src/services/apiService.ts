@@ -1,5 +1,5 @@
 import { apiRequest } from '../api/client'
-import type { Business, BusinessUser, Invitation, Order, Product } from '../types'
+import type { Business, Invitation, Order, Product } from '../types'
 
 export interface LoginResponse {
   token?: string
@@ -23,6 +23,13 @@ export interface User {
   business_id?: string
 }
 
+export interface CreatedUser {
+  user_id: string
+  name: string
+  email: string
+  phone: string
+}
+
 function normalizeOrderStatus(status: Order['status']): Order['status'] {
   if (status === 'IN_PROGRESS' || status === 'READY') {
     return 'ACCEPTED'
@@ -43,10 +50,14 @@ export const apiService = {
     return apiRequest<User>('/auth/me')
   },  
 
-  async businessLogin(email: string, password: string, businessId: string) {
+  async businessLogin(email: string, password: string, businessId?: string) {
     return apiRequest<LoginResponse>('/auth/business-login', {
       method: 'POST',
-      body: JSON.stringify({ email, password, business_id: businessId }),
+      body: JSON.stringify({
+        email,
+        password,
+        ...(businessId ? { business_id: businessId } : {}),
+      }),
     })
   },
 
@@ -95,7 +106,7 @@ export const apiService = {
   },
 
   async createUser(payload: { name: string; email: string; phone: string; password: string }) {
-    return apiRequest<BusinessUser>('/users', {
+    return apiRequest<CreatedUser>('/users', {
       method: 'POST',
       body: JSON.stringify(payload),
     })

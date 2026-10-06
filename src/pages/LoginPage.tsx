@@ -1,19 +1,31 @@
 import { useState } from 'react'
 import { Button, FormField } from '../components/ui'
+import type { LoginResponse } from '../services/apiService'
 
 interface LoginPageProps {
-  onLogin: (email: string, password: string) => Promise<void>
+  onLogin: (email: string, password: string, businessId?: string) => Promise<LoginResponse | undefined>
   loginError : string | null
   isLoginLoading: boolean
 }
 
 export function LoginPage({ onLogin, loginError , isLoginLoading }: LoginPageProps) {
-  const [email, setEmail] = useState('manager@fastteat.com')
-  const [password, setPassword] = useState('fastteat123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [businesses, setBusinesses] = useState<NonNullable<LoginResponse['businesses']>>([])
+  const [selectedBusinessId, setSelectedBusinessId] = useState('')
 
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
-    await onLogin(email, password)
+    const result = await onLogin(email, password, businesses.length ? selectedBusinessId : undefined)
+
+    if (result?.multipleBusinesses) {
+      const options = result.businesses ?? []
+      setBusinesses(options)
+      setSelectedBusinessId(options[0]?.business_id ?? '')
+    } else if (result?.token) {
+      setBusinesses([])
+      setSelectedBusinessId('')
+    }
   }
 
   return (
@@ -31,8 +43,13 @@ export function LoginPage({ onLogin, loginError , isLoginLoading }: LoginPagePro
               className="rounded-md border border-neutral-200 px-4 py-3 outline-none transition focus:border-primary-500"
               id="email"
               type="email"
+              required
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value)
+                setBusinesses([])
+                setSelectedBusinessId('')
+              }}
               placeholder="manager@fastteat.com"
             />
           </FormField>
@@ -42,15 +59,38 @@ export function LoginPage({ onLogin, loginError , isLoginLoading }: LoginPagePro
               className="rounded-md border border-neutral-200 px-4 py-3 outline-none transition focus:border-primary-500"
               id="password"
               type="password"
+              required
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setBusinesses([])
+                setSelectedBusinessId('')
+              }}
               placeholder="••••••••"
             />
           </FormField>
 
+          {businesses.length > 0 ? (
+            <FormField id="business" label="Selecciona el negocio">
+              <select
+                className="rounded-md border border-neutral-200 px-4 py-3 outline-none transition focus:border-primary-500"
+                id="business"
+                value={selectedBusinessId}
+                onChange={(event) => setSelectedBusinessId(event.target.value)}
+                required
+              >
+                {businesses.map((business) => (
+                  <option key={business.business_id} value={business.business_id}>
+                    {business.business_name}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          ) : null}
+
           {loginError  ? <p className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger-600" role="alert">{loginError }</p> : null}
-          <Button className="mt-2" size="lg" type="submit" disabled={isLoginLoading}>
-            {isLoginLoading ? 'Entrando…' : 'Entrar al panel'}
+          <Button className="mt-2" size="lg" type="submit" disabled={isLoginLoading || (businesses.length > 0 && !selectedBusinessId)}>
+            {isLoginLoading ? 'Entrando…' : businesses.length > 0 ? 'Continuar' : 'Entrar al panel'}
           </Button>
 
           <div className="text-center space-y-3">
