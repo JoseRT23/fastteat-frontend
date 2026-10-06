@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { apiService } from '../services/apiService'
-import type { BusinessUser, Product } from '../types'
+import { apiService, type LoginResponse, type User } from '../services/apiService'
+import type { Product } from '../types'
 
 interface CartItem extends Product {
   quantity: number
@@ -9,8 +9,9 @@ interface CartItem extends Product {
 
 interface AppContextValue {
   isAuthenticated: boolean
-  currentUser?: BusinessUser | undefined
-  login: (email: string, password: string) => Promise<void>
+  currentUser?: User | undefined
+  login: (email: string, password: string) => Promise<LoginResponse | undefined>
+  businessLogin: (email: string, password: string, businessId?: string) => Promise<LoginResponse | undefined>
   logout: () => void
   cart: CartItem[]
   addToCart: (product: Product) => void
@@ -18,7 +19,7 @@ interface AppContextValue {
   clearCart: () => void
   cartCount: number
   loginError: string | null
-  isLoginLoading : boolean
+  isLoginLoading: boolean
 }
 
 const AppContext = createContext<AppContextValue | undefined>(undefined)
@@ -27,15 +28,16 @@ const CART_STORAGE_KEY = 'fastteat-cart'
 
 export function AppContextProvider({ children }: { children: ReactNode }) {
   const location = useLocation()
+  const initialPathname = useRef(location.pathname)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [currentUser, setCurrentUser] = useState<BusinessUser | undefined>(undefined)
+  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined)
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return []
     const stored = window.localStorage.getItem(CART_STORAGE_KEY)
     return stored ? JSON.parse(stored) : []
   })
   const [loginError, setLoginError] = useState<string | null>(null)
-  const [isLoginLoading , setIsLoginLoading ] = useState(false)
+  const [isLoginLoading, setIsLoginLoading] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -44,9 +46,10 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
   }, [cart])
 
   useEffect(() => {
-    const isProtectedBusinessRoute = /^\/business\/(?!login(?:\/|$)|register(?:\/|$))/.test(location.pathname)
+    const isProtectedBusinessRoute = /^\/business\/(?!login(?:\/|$)|register(?:\/|$))/.test(initialPathname.current)
+    const isCustomerRoute = !initialPathname.current.startsWith('/business/')
 
-    if (!isProtectedBusinessRoute) {
+    if (!isProtectedBusinessRoute && !isCustomerRoute) {
       return
     }
 
@@ -61,18 +64,60 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     if (!email || !password) {
       setLoginError('Completa tus credenciales para entrar.')
-      return
+      return undefined
     }
 
     setIsLoginLoading(true)
     setLoginError(null)
 
     try {
-      await apiService.login(email, password)
+      const result = await apiService.login(email, password)
+
+      if (result.multipleBusinesses) {
+        setIsAuthenticated(false)
+        return result
+      }
+
+      setCurrentUser(await apiService.getCurrentUser())
       setIsAuthenticated(true)
+      return result
     } catch (error) {
       setIsAuthenticated(false)
       setLoginError(error instanceof Error ? error.message : 'No se pudo iniciar sesión')
+      return undefined
+    } finally {
+      setIsLoginLoading(false)
+    }
+  }
+
+  const businessLogin = async (email: string, password: string, businessId?: string) => {
+    if (!email || !password) {
+      setLoginError('Completa tus credenciales para entrar.')
+      return undefined
+    }
+
+    setIsLoginLoading(true)
+    setLoginError(null)
+
+    try {
+      const result = await apiService.businessLogin(email, password, businessId)
+
+      if (result.multipleBusinesses) {
+        setIsAuthenticated(false)
+        return result
+      }
+
+      if (!result.token) {
+        throw new Error('No se recibió el token de acceso')
+      }
+
+      setCurrentUser(await apiService.getCurrentUser())
+      setIsAuthenticated(true)
+      return result
+    } catch (error) {
+      setIsAuthenticated(false)
+      setLoginError(error instanceof Error ? error.message : 'No se pudo iniciar sesión')
+      return undefined
     } finally {
       setIsLoginLoading(false)
     }
@@ -108,6 +153,7 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     isAuthenticated,
     currentUser,
     login,
+    businessLogin,
     logout,
     cart,
     addToCart,
@@ -115,8 +161,8 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     clearCart,
     cartCount,
     loginError,
-    isLoginLoading ,
-  }), [isAuthenticated, cart, cartCount, loginError, isLoginLoading ])
+    isLoginLoading,
+  }), [isAuthenticated, currentUser, cart, cartCount, loginError, isLoginLoading])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

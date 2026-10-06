@@ -1,5 +1,6 @@
 import type { Product } from "../types";
 import { PageHeader } from "../components/ui/PageHeader";
+import { Button } from "../components/ui";
 
 interface CartItem extends Product {
   quantity: number;
@@ -47,12 +48,23 @@ export function CustomerCheckoutPage({
     <section className="space-y-6">
       <PageHeader title="Resumen de tu pedido" />
 
-      <div className="grid items-start gap-4 lg:grid-cols-[1fr_350px]">
+      <div className={ cart.length > 0 ? "grid items-start gap-4 lg:grid-cols-[1fr_350px]" : "grid items-start gap-4 grid-cols-1" }>
         <div className="rounded-3xl bg-white p-5 shadow-sm shadow-slate-200/60">
           {cart.length === 0 ? (
-            <p className="text-sm text-slate-500">
-              Tu carrito está vacío. Explora un negocio y añade productos.
-            </p>
+            <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+              <p className="text-sm text-slate-500">
+                Tu carrito está vacío.
+              </p>
+              <p className="text-sm text-slate-500">
+                Explora productos o negocios y añade lo que más te guste.
+              </p>
+
+              <Button variant="secondary" size="sm" className="mt-4">
+                <a href="/explore" className="text-sm font-semibold text-slate-900">
+                  Encuentra productos
+                </a>
+              </Button>
+            </div>
           ) : (
             <div className="grid gap-3">
               {cart.map((product) => {
@@ -96,26 +108,30 @@ export function CustomerCheckoutPage({
           )}
         </div>
 
-        <div className="h-fit rounded-3xl bg-slate-900 p-5 text-white shadow-sm shadow-slate-200/60 lg:sticky lg:top-6">
-          <h3 className="mb-4 text-lg font-bold">
-            Tu compra
-          </h3>
+        {cart.length > 0 && (
+          <div className="h-fit rounded-3xl bg-slate-900 p-5 text-white shadow-sm shadow-slate-200/60 lg:sticky lg:top-6">
+            <h3 className="mb-4 text-lg font-bold">
+              Resumen de compra
+            </h3>
 
-          <div className="mb-4 flex items-center justify-between text-sm">
-            <span>Total estimado</span>
+            <div className="mb-4 flex flex-col text-sm gap-2">
+              <span>Productos({cart.length})</span>
+              <div className="mt-1 flex items-center justify-between font-bold">
+                <span>Total estimado</span>
+                <strong>{formatPrice(total)}</strong>
+              </div>
+            </div>
 
-            <strong>{formatPrice(total)}</strong>
+            <button
+              type="button"
+              onClick={onPlaceOrder}
+              disabled={cart.length === 0}
+              className="w-full cursor-pointer rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Confirmar pedido
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={onPlaceOrder}
-            disabled={cart.length === 0}
-            className="w-full cursor-pointer rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Confirmar pedido
-          </button>
-        </div>
+        )}
       </div>
     </section>
   );
