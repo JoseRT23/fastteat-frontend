@@ -51,11 +51,11 @@ export default function StorePage({
       />
 
       {filteredBusinesses.length > 0 ? (
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredBusinesses.map((business) => (
             <article
               key={business.business_id}
-              className="group overflow-hidden rounded-2xl bg-white shadow-sm shadow-slate-200/60 transition duration-200 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
+              className="group min-w-0 overflow-hidden rounded-2xl bg-white shadow-sm shadow-slate-200/60 transition duration-200 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-md"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
                 {business.image ? (
@@ -74,8 +74,8 @@ export default function StorePage({
               </div>
 
               <div className="space-y-3 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-lg font-semibold text-neutral-900">
+                <div className="flex items-start gap-3">
+                  <h2 className="min-w-0 flex-1 break-words text-lg font-semibold text-neutral-900">
                     {business.name}
                   </h2>
 
@@ -86,19 +86,19 @@ export default function StorePage({
 
                 <div className="space-y-1">
                   {business.address && (
-                    <p className="text-sm text-neutral-500">
+                    <p className="break-words text-sm text-neutral-500">
                       {business.address}
                     </p>
                   )}
 
                   {business.mobile && (
-                    <p className="text-sm text-neutral-500">
+                    <p className="break-words text-sm text-neutral-500">
                       {business.mobile}
                     </p>
                   )}
 
                   {business.email && (
-                    <p className="truncate text-sm text-neutral-500">
+                    <p className="break-all text-sm text-neutral-500">
                       {business.email}
                     </p>
                   )}

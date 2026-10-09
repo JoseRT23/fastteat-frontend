@@ -7,6 +7,7 @@ export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' |
 export interface Product {
   product_id: string
   business_id?: string
+  sub_category_id: string
   name: string
   description: string
   current_price: number

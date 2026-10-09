@@ -66,9 +66,7 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
   return (
     <section className="space-y-6">
       <PageHeader
-        eyebrow="Catálogo"
         title="Descubre nuestros productos"
-        description="Explora los productos disponibles y añade tus favoritos al carrito."
         actions={
           <div className="relative w-full md:w-80">
             <input
@@ -86,26 +84,8 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
         }
       />
 
-      {businessId && (
-        <div className="flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-slate-600 shadow-sm">
-            <MotionIcon name="LucideStore" />
-          </div>
-
-          <div>
-            <p className="font-semibold text-slate-800">
-              Productos disponibles
-            </p>
-
-            <p className="text-xs text-slate-500">
-              Selecciona un producto para añadirlo a tu carrito.
-            </p>
-          </div>
-        </div>
-      )}
-
       {filteredProducts.length > 0 ? (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => {
             const image = getProductImage(product);
             const price = getProductPrice(product);
