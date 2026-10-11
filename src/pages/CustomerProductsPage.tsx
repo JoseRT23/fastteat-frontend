@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { MotionIcon } from "motion-icons-react";
-import type { Product } from '../types'
-import { PageHeader } from '../components/ui/PageHeader'
+import type { Product } from "../types";
+import { PageHeader } from "../components/ui/PageHeader";
 
 interface CustomerProductsPageProps {
-  businessId: string | null
-  products: Product[]
-  onAddToCart: (product: Product) => void
+  businessId: string | null;
+  products: Product[];
+  onAddToCart: (product: Product) => void;
 }
 
 const productImages: Record<string, string> = {
@@ -42,7 +42,11 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-export function CustomerProductsPage({ businessId, products, onAddToCart }: CustomerProductsPageProps) {
+export function CustomerProductsPage({
+  businessId,
+  products,
+  onAddToCart,
+}: CustomerProductsPageProps) {
   const [search, setSearch] = useState("");
 
   const filteredProducts = useMemo(() => {
@@ -91,7 +95,10 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
             const price = getProductPrice(product);
 
             return (
-              <article key={product.product_id} className="group overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-200/60 transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <article
+                key={product.product_id}
+                className="group overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-200/60 transition duration-200 hover:-translate-y-1 hover:shadow-lg"
+              >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
                   {image ? (
                     <img
@@ -105,9 +112,7 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
                         <MotionIcon name="LucideImageOff" />
                       </div>
 
-                      <span className="text-xs font-medium">
-                        Sin imagen
-                      </span>
+                      <span className="text-xs font-medium">Sin imagen</span>
                     </div>
                   )}
 
@@ -171,5 +176,5 @@ export function CustomerProductsPage({ businessId, products, onAddToCart }: Cust
         </div>
       )}
     </section>
-  )
+  );
 }

@@ -13,6 +13,7 @@ export interface Product {
   current_price: number
   active: boolean
   image?: string
+  rating?: number
 }
 
 export interface OrderItem {

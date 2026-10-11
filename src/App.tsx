@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import { CustomerLayout } from './components/CustomerLayout'
-import { Layout } from './components/Layout'
-import { useAppContext } from './context/AppContext'
+import { CustomerLayout } from "./components/CustomerLayout";
+import { Layout } from "./components/Layout";
+import { useAppContext } from "./context/AppContext";
 
 import {
   mockBusinessCatalog,
@@ -11,23 +11,23 @@ import {
   mockOrders,
   mockProducts,
   mockUsers,
-} from './data/mockData'
+} from "./data/mockData";
 
-import { CustomerCheckoutPage } from './pages/CustomerCheckoutPage'
-import { CustomerExplorePage } from './pages/CustomerExplorePage'
-import { CustomerLoginPage } from './pages/CustomerLoginPage'
-import { CustomerOrdersPage } from './pages/CustomerOrdersPage'
-import { CustomerProductsPage } from './pages/CustomerProductsPage'
-import { CustomerRegisterPage } from './pages/CustomerRegisterPage'
-import { DashboardPage } from './pages/DashboardPage'
-import { LoginPage } from './pages/LoginPage'
-import { OrdersPage } from './pages/OrdersPage'
-import { ProductsPage } from './pages/ProductsPage'
-import { RegisterPage } from './pages/RegisterPage'
-import { UsersPage } from './pages/UsersPage'
-import StorePage from './pages/StorePage'
+import { CustomerCheckoutPage } from "./pages/CustomerCheckoutPage";
+import CustomerExplorePage from "./pages/CustomerExplorePage";
+import { CustomerLoginPage } from "./pages/CustomerLoginPage";
+import { CustomerOrdersPage } from "./pages/CustomerOrdersPage";
+import { CustomerProductsPage } from "./pages/CustomerProductsPage";
+import { CustomerRegisterPage } from "./pages/CustomerRegisterPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { LoginPage } from "./pages/LoginPage";
+import { OrdersPage } from "./pages/OrdersPage";
+import { ProductsPage } from "./pages/ProductsPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { UsersPage } from "./pages/UsersPage";
+import StorePage from "./pages/StorePage";
 
-import type { Order, Product } from './types'
+import type { Order, Product } from "./types";
 
 function App() {
   const {
@@ -43,70 +43,63 @@ function App() {
     cartCount,
     loginError,
     isLoginLoading,
-  } = useAppContext()
+  } = useAppContext();
 
-  const [selectedBusinessId, setSelectedBusinessId] =
-    useState<string | null>('biz-1')
+  const [selectedBusinessId, setSelectedBusinessId] = useState<string | null>(
+    "biz-1",
+  );
 
-  const [orders, setOrders] = useState<Order[]>(mockOrders)
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
 
-  const handleLogin = async (
-    email: string,
-    password: string,
-  ) => {
-    return login(email, password)
-  }
+  const handleLogin = async (email: string, password: string) => {
+    return login(email, password);
+  };
 
   const handleBusinessLogin = async (
     email: string,
     password: string,
     businessId?: string,
   ) => {
-    return businessLogin(email, password, businessId)
-  }
+    return businessLogin(email, password, businessId);
+  };
 
   const handleLogout = () => {
-    logout()
-  }
+    logout();
+  };
 
   const handleAddToCart = (product: Product) => {
-    addToCart(product)
-  }
+    addToCart(product);
+  };
 
   const handleRemoveFromCart = (productId: string) => {
-    removeFromCart(productId)
-  }
+    removeFromCart(productId);
+  };
 
   const handlePlaceOrder = () => {
-    if (cart.length === 0) return
+    if (cart.length === 0) return;
 
-    clearCart()
-  }
+    clearCart();
+  };
 
   const handleSelectBusiness = (businessId: string) => {
-    setSelectedBusinessId(businessId)
-  }
+    setSelectedBusinessId(businessId);
+  };
 
   const handleUpdateOrderStatus = (
     orderId: string,
-    status: Order['status'],
+    status: Order["status"],
   ) => {
     setOrders((currentOrders) =>
       currentOrders.map((order) =>
-        order.order_id === orderId
-          ? { ...order, status }
-          : order,
+        order.order_id === orderId ? { ...order, status } : order,
       ),
-    )
-  }
+    );
+  };
 
   return (
     <Routes>
       {/* Página principal */}
-      <Route
-        path="/"
-        element={<Navigate to="/explore" replace />}
-      />
+      <Route path="/" element={<Navigate to="/explore" replace />} />
 
       {/* Rutas del negocio */}
       <Route
@@ -118,10 +111,7 @@ function App() {
               path="login"
               element={
                 isAuthenticated && currentUser?.business_id ? (
-                  <Navigate
-                    to="/business/dashboard"
-                    replace
-                  />
+                  <Navigate to="/business/dashboard" replace />
                 ) : (
                   <LoginPage
                     onLogin={handleBusinessLogin}
@@ -137,10 +127,7 @@ function App() {
               path="register"
               element={
                 isAuthenticated ? (
-                  <Navigate
-                    to="/business/dashboard"
-                    replace
-                  />
+                  <Navigate to="/business/dashboard" replace />
                 ) : (
                   <RegisterPage />
                 )
@@ -152,10 +139,7 @@ function App() {
               path="*"
               element={
                 isAuthenticated ? (
-                  <Layout
-                    currentUser={currentUser}
-                    onLogout={handleLogout}
-                  >
+                  <Layout currentUser={currentUser} onLogout={handleLogout}>
                     <Routes>
                       {/* Dashboard */}
                       <Route
@@ -172,11 +156,7 @@ function App() {
                       {/* Productos */}
                       <Route
                         path="products"
-                        element={
-                          <ProductsPage
-                            products={mockProducts}
-                          />
-                        }
+                        element={<ProductsPage products={mockProducts} />}
                       />
 
                       {/* Pedidos */}
@@ -185,9 +165,7 @@ function App() {
                         element={
                           <OrdersPage
                             orders={orders}
-                            onUpdateOrderStatus={
-                              handleUpdateOrderStatus
-                            }
+                            onUpdateOrderStatus={handleUpdateOrderStatus}
                           />
                         }
                       />
@@ -206,20 +184,12 @@ function App() {
                       {/* Ruta por defecto del negocio */}
                       <Route
                         path="*"
-                        element={
-                          <Navigate
-                            to="/business/dashboard"
-                            replace
-                          />
-                        }
+                        element={<Navigate to="/business/dashboard" replace />}
                       />
                     </Routes>
                   </Layout>
                 ) : (
-                  <Navigate
-                    to="/business/login"
-                    replace
-                  />
+                  <Navigate to="/business/login" replace />
                 )
               }
             />
@@ -231,7 +201,10 @@ function App() {
       <Route
         path="/*"
         element={
-          <CustomerLayout cartCount={cartCount} isAuthenticated={isAuthenticated}>
+          <CustomerLayout
+            cartCount={cartCount}
+            isAuthenticated={isAuthenticated}
+          >
             <Routes>
               <Route
                 path="login"
@@ -246,12 +219,14 @@ function App() {
 
               <Route path="register" element={<CustomerRegisterPage />} />
 
-              {/* Explorar negocios */}
+              {/* Explorar productos */}
               <Route
                 path="explore"
                 element={
                   <CustomerExplorePage
-                    onSelectBusiness={handleSelectBusiness}
+                    onSelectProduct={(productId) => {
+                      console.log("Producto seleccionado:", productId);
+                    }}
                   />
                 }
               />
@@ -259,11 +234,7 @@ function App() {
               {/* Lista de negocios */}
               <Route
                 path="businesses"
-                element={
-                  <StorePage
-                    onSelectBusiness={handleSelectBusiness}
-                  />
-                }
+                element={<StorePage onSelectBusiness={handleSelectBusiness} />}
               />
 
               {/* Productos */}
@@ -273,9 +244,8 @@ function App() {
                   <CustomerProductsPage
                     businessId={selectedBusinessId}
                     products={
-                      mockBusinessCatalog[
-                        selectedBusinessId ?? 'biz-1'
-                      ] ?? mockProducts
+                      mockBusinessCatalog[selectedBusinessId ?? "biz-1"] ??
+                      mockProducts
                     }
                     onAddToCart={handleAddToCart}
                   />
@@ -288,9 +258,7 @@ function App() {
                 element={
                   <CustomerCheckoutPage
                     cart={cart}
-                    onRemoveFromCart={
-                      handleRemoveFromCart
-                    }
+                    onRemoveFromCart={handleRemoveFromCart}
                     onPlaceOrder={handlePlaceOrder}
                   />
                 }
@@ -299,29 +267,17 @@ function App() {
               {/* Mis pedidos */}
               <Route
                 path="my-orders"
-                element={
-                  <CustomerOrdersPage
-                    orders={orders}
-                  />
-                }
+                element={<CustomerOrdersPage orders={orders} />}
               />
 
               {/* Ruta por defecto del cliente */}
-              <Route
-                path="*"
-                element={
-                  <Navigate
-                    to="/explore"
-                    replace
-                  />
-                }
-              />
+              <Route path="*" element={<Navigate to="/explore" replace />} />
             </Routes>
           </CustomerLayout>
         }
       />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
