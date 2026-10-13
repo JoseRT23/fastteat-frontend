@@ -1,6 +1,7 @@
 import type { Product } from "../types";
 import { PageHeader } from "../components/ui/PageHeader";
 import { Button } from "../components/ui";
+import { MotionIcon } from 'motion-icons-react';
 
 interface CartItem extends Product {
   quantity: number;
@@ -63,6 +64,7 @@ export function CustomerCheckoutPage({
                 <a href="/explore" className="text-sm font-semibold text-slate-900">
                   Encuentra productos
                 </a>
+                <MotionIcon name="Search" animation="rubber" />
               </Button>
             </div>
           ) : (
