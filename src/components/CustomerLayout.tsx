@@ -32,12 +32,6 @@ export function CustomerLayout({ children, cartCount, isAuthenticated }: Custome
           <div className="flex items-center gap-2">
 
             <nav className="hidden items-center gap-2 md:flex">
-              {isAuthenticated && (
-                <MotionIcon
-                  className="mr-2 h-6 w-6 text-neutral-700 cursor-pointer"
-                  name="UserCircle"
-                />
-              )}
               {visibleNavItems.map((item) => {
                 const label = item.to === '/checkout' ? `Carrito (${cartCount})` : item.label
 
@@ -114,6 +108,12 @@ export function CustomerLayout({ children, cartCount, isAuthenticated }: Custome
               </svg>
             </IconButton>
 
+            {isAuthenticated && (
+              <MotionIcon
+                className="mr-2 h-6 w-6 text-neutral-700 cursor-pointer"
+                name="UserCircle"
+              />
+            )}
           </div>
         </div>
 
@@ -158,7 +158,7 @@ export function CustomerLayout({ children, cartCount, isAuthenticated }: Custome
         ) : null}
       </header>
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6"> {children} </main>
+      <main className="mx-auto w-full max-w-7xl px-4"> {children} </main>
     </div>
   )
 }
