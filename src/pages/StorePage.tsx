@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { MotionIcon } from 'motion-icons-react'
 import { PageHeader } from '../components/ui/PageHeader'
 import { mockBusinesses } from '../data/mockData'
+import CategoryList from '../components/ui/CategoryList'
+
+const categories = [
+  { category_id: "cat-1", name: "Hamburguesas", icon: "LucideSandwich" },
+  { category_id: "cat-2", name: "Pizzas", icon: "LucidePizza" },
+  { category_id: "cat-3", name: "Bebidas", icon: "LucideCupSoda" },
+];
 
 interface StorePageProps {
   onSelectBusiness: (businessId: string) => void
@@ -13,6 +20,7 @@ export default function StorePage({
 }: StorePageProps) {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const filteredBusinesses = useMemo(() => {
     const normalizedSearch = search.toLowerCase().trim()
@@ -26,6 +34,11 @@ export default function StorePage({
     onSelectBusiness(businessId)
     navigate('/products')
   }
+
+  // Cambiar categoría limpia la subcategoría seleccionada.
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+  };  
 
   return (
     <section className="space-y-6">
@@ -49,6 +62,18 @@ export default function StorePage({
           </div>
         }
       />
+
+      <section className="min-w-0">
+        <h2 className="mb-4 text-lg font-bold text-slate-900">
+          ¿Qué se te antoja hoy?
+        </h2>
+
+        <CategoryList
+          categories={categories}
+          selectedCategory={selectedCategory}
+          handleCategoryChange={handleCategoryChange}
+        />
+      </section>      
 
       {filteredBusinesses.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

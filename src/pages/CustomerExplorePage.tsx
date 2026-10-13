@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { MotionIcon } from "motion-icons-react";
 import { PageHeader, ProductCard } from "../components/ui";
 import type { Product } from "../types";
+import CategoryList from "../components/ui/CategoryList";
 
 const categories = [
   { category_id: "cat-1", name: "Hamburguesas", icon: "LucideSandwich" },
@@ -333,50 +334,11 @@ export default function CustomerExplorePage({
           ¿Qué se te antoja hoy?
         </h2>
 
-        <div className="flex gap-5 overflow-x-auto pb-3">
-          <button
-            type="button"
-            onClick={() => handleCategoryChange("")}
-            aria-pressed={selectedCategory === ""}
-            className="flex min-w-[76px] shrink-0 flex-col items-center gap-2"
-          >
-            <span
-              className={`flex h-16 w-16 items-center justify-center rounded-full transition ${
-                selectedCategory === ""
-                  ? "bg-slate-900 text-white ring-4 ring-slate-200"
-                  : "bg-slate-100 text-slate-600"
-              }`}
-            >
-              <MotionIcon name="LucideUtensils" />
-            </span>
-
-            <span className="text-xs font-semibold text-slate-700">Todos</span>
-          </button>
-
-          {categories.map((category) => (
-            <button
-              key={category.category_id}
-              type="button"
-              onClick={() => handleCategoryChange(category.category_id)}
-              aria-pressed={selectedCategory === category.category_id}
-              className="flex min-w-[76px] shrink-0 flex-col items-center gap-2"
-            >
-              <span
-                className={`flex h-16 w-16 items-center justify-center rounded-full transition ${
-                  selectedCategory === category.category_id
-                    ? "bg-slate-900 text-white ring-4 ring-slate-200"
-                    : "bg-slate-100 text-slate-600"
-                }`}
-              >
-                <MotionIcon name={category.icon} />
-              </span>
-
-              <span className="max-w-24 text-center text-xs font-semibold text-slate-700">
-                {category.name}
-              </span>
-            </button>
-          ))}
-        </div>
+        <CategoryList
+          categories={categories}
+          selectedCategory={selectedCategory}
+          handleCategoryChange={handleCategoryChange}
+        />
       </section>
 
       {/* Filtros y resultados */}
