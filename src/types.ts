@@ -62,4 +62,6 @@ export interface Business {
   mobile?: string
   email?: string
   image?: string | null
+  rating?: number
+  category_ids?: string[]
 }
