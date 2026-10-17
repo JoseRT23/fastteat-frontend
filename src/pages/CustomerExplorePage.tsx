@@ -306,7 +306,7 @@ export default function CustomerExplorePage({
   );
 
   return (
-    <section className="w-full min-w-0 space-y-6">
+    <section className="w-full min-w-0 space-y-6 pt-6">
       {/* Título y buscador alineados mediante PageHeader */}
       <PageHeader
         title="Explora nuestros productos"
@@ -448,7 +448,7 @@ export default function CustomerExplorePage({
               htmlFor="rating-filter"
               className="mb-2 block text-sm font-semibold text-slate-700"
             >
-              Calificación mínima
+              Calificación
             </label>
 
             <select
