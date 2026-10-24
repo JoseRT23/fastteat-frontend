@@ -133,7 +133,7 @@ export const apiService = {
   
   async registerBusiness(payload: {
     user: { email: string; name?: string; phone?: string; password?: string }
-    business: { name: string; email: string; mobile: string; address?: string }
+    business: { name: string; email: string; mobile: string; address?: string; latitude?: string; longitude?: string }
   }) {
     return apiRequest<{ business: Business; user_id: string }>('/business/register', {
       method: 'POST',
