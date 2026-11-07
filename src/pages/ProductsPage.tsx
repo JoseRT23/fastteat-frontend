@@ -1,7 +1,8 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "../components/Modal";
 import { Button, PageHeader, BusinessCard } from "../components/ui";
 import { apiService } from "../services/apiService";
+import { useAppContext } from "../context/AppContext";
 
 import type { Product } from "../types";
 
@@ -35,6 +36,7 @@ const emptyDraft = (): ProductFormState => ({
 });
 
 export function ProductsPage() {
+  const { currentUser } = useAppContext();
   const [productList, setProductList] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -43,10 +45,14 @@ export function ProductsPage() {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
   useEffect(() => {
+    loadProducts()
+  }, []);
+
+  const loadProducts = () => {
     apiService.getProducts()
       .then(products => setProductList(products.data))
       .catch(error => console.log(error))
-  }, []);
+  }
 
   const loadSubCategories = async (categoryId: string) => {
     if (!categoryId) {
@@ -92,6 +98,7 @@ export function ProductsPage() {
     setEditingProduct(null);
     setSubCategories([]);
     setDraft(emptyDraft());
+    loadProducts();
   };
 
   const handleCategoryChange = (categoryId: string) => {
@@ -104,9 +111,8 @@ export function ProductsPage() {
     loadSubCategories(categoryId);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const price = Number.parseFloat(draft.current_price);
 
     if (
@@ -121,31 +127,32 @@ export function ProductsPage() {
     }
 
     if (editingProduct) {
-      setProductList((current) =>
-        current.map((product) =>
-          product.product_id === editingProduct.product_id
-            ? {
-                ...product,
-                name: draft.name.trim(),
-                description: draft.description.trim(),
-                current_price: price,
-                sub_category_id: draft.sub_category_id,
-                active: draft.active,
-              }
-            : product,
-        ),
-      );
-    } else {
       const nextProduct: Product = {
-        product_id: `prod-${Date.now()}`,
+        business_id: editingProduct.business_id,
+        sub_category_id: draft.sub_category_id,
         name: draft.name.trim(),
         description: draft.description.trim(),
         current_price: price,
-        sub_category_id: draft.sub_category_id,
         active: draft.active,
       };
 
-      setProductList((current) => [nextProduct, ...current]);
+      await apiService.updateProduct(editingProduct.product_id!, nextProduct);
+    } else {
+      const businessId = currentUser?.business_id ?? "";
+      if (!businessId) {
+        throw "El usuario no puede crear productos";
+      }
+
+      const nextProduct: Product = {
+        business_id: businessId,
+        sub_category_id: draft.sub_category_id,
+        name: draft.name.trim(),
+        description: draft.description.trim(),
+        current_price: price,
+        active: draft.active,
+      };
+
+      await apiService.createProduct(nextProduct);
     }
 
     closeModal();

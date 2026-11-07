@@ -5,7 +5,7 @@ export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'ACCEPTED' | 'CA
 export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'CANCELLED'
 
 export interface Product {
-  product_id: string
+  product_id?: string
   business_id?: string
   sub_category_id: string
   name: string
