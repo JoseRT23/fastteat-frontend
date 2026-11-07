@@ -65,3 +65,20 @@ export interface Business {
   rating?: number
   category_ids?: string[]
 }
+
+export interface Category {
+  category_id: string
+  name: string
+  slug: string
+  description?: string
+  icon?: string | null
+  image?: string | null
+}
+
+export interface SubCategory {
+  sub_category_id: string
+  category_id: string
+  name: string
+  slug: string
+  description?: string
+}

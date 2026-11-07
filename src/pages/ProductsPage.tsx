@@ -1,11 +1,9 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Modal } from "../components/Modal";
 import { Button, PageHeader, BusinessCard } from "../components/ui";
-import type { Product } from "../types";
+import { apiService } from "../services/apiService";
 
-interface ProductsPageProps {
-  products: Product[];
-}
+import type { Product } from "../types";
 
 interface Category {
   category_id: string;
@@ -27,39 +25,6 @@ interface ProductFormState {
   active: boolean;
 }
 
-const mockCategories: Category[] = [
-  { category_id: "cat-1", name: "Hamburguesas" },
-  { category_id: "cat-2", name: "Pizzas" },
-  { category_id: "cat-3", name: "Bebidas" },
-  { category_id: "cat-4", name: "Comida mexicana" },
-];
-
-const mockSubCategories: SubCategory[] = [
-  {
-    sub_category_id: "sub-1",
-    category_id: "cat-1",
-    name: "Combos de hamburguesa",
-  },
-  {
-    sub_category_id: "sub-2",
-    category_id: "cat-1",
-    name: "Hamburguesas clásicas",
-  },
-  {
-    sub_category_id: "sub-3",
-    category_id: "cat-1",
-    name: "Hamburguesas especiales",
-  },
-  { sub_category_id: "sub-4", category_id: "cat-2", name: "Pizzas clásicas" },
-  { sub_category_id: "sub-5", category_id: "cat-2", name: "Pizzas especiales" },
-  { sub_category_id: "sub-6", category_id: "cat-2", name: "Pizzas familiares" },
-  { sub_category_id: "sub-7", category_id: "cat-3", name: "Gaseosas" },
-  { sub_category_id: "sub-8", category_id: "cat-3", name: "Jugos naturales" },
-  { sub_category_id: "sub-9", category_id: "cat-3", name: "Agua" },
-  { sub_category_id: "sub-10", category_id: "cat-4", name: "Tacos" },
-  { sub_category_id: "sub-11", category_id: "cat-4", name: "Burritos" },
-];
-
 const emptyDraft = (): ProductFormState => ({
   name: "",
   description: "",
@@ -69,45 +34,46 @@ const emptyDraft = (): ProductFormState => ({
   active: true,
 });
 
-export function ProductsPage({ products }: ProductsPageProps) {
-  const [productList, setProductList] = useState<Product[]>(products);
+export function ProductsPage() {
+  const [productList, setProductList] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [draft, setDraft] = useState<ProductFormState>(emptyDraft());
+  const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
   useEffect(() => {
-    setProductList(products);
-  }, [products]);
+    apiService.getProducts()
+      .then(products => setProductList(products.data))
+      .catch(error => console.log(error))
+  }, []);
 
-  const loadSubCategories = (categoryId: string) => {
+  const loadSubCategories = async (categoryId: string) => {
     if (!categoryId) {
       setSubCategories([]);
       return;
     }
 
-    const filteredSubCategories = mockSubCategories.filter(
-      (subCategory) => subCategory.category_id === categoryId,
-    );
-
-    setSubCategories(filteredSubCategories);
+    const subCategories = await apiService.getSubCategoriesByCategory(categoryId);
+    setSubCategories(subCategories)
   };
 
-  const openCreateModal = () => {
+  const openCreateModal = async () => {
     setEditingProduct(null);
-    setSubCategories([]);
+    const categories = await apiService.getCategories();
+    setCategories(categories);
     setDraft(emptyDraft());
     setIsModalOpen(true);
   };
 
-  const openEditModal = (product: Product) => {
+  const openEditModal = async (product: Product) => {
     setEditingProduct(product);
 
-    const subCategory = mockSubCategories.find(
-      (item) => item.sub_category_id === product.sub_category_id,
-    );
-
-    const categoryId = subCategory?.category_id ?? "";
+    const categories = await apiService.getCategories();
+    setCategories(categories);
+    const subCategories = await apiService.getSubCategories(product.sub_category_id);
+    setSubCategories(subCategories)
+    const categoryId = subCategories[0]?.category_id ?? "";
 
     setDraft({
       name: product.name,
@@ -118,7 +84,6 @@ export function ProductsPage({ products }: ProductsPageProps) {
       active: product.active,
     });
 
-    loadSubCategories(categoryId);
     setIsModalOpen(true);
   };
 
@@ -229,7 +194,7 @@ export function ProductsPage({ products }: ProductsPageProps) {
                 required
               >
                 <option value="">Seleccione una categoría</option>
-                {mockCategories.map((category) => (
+                {categories.map((category) => (
                   <option
                     key={category.category_id}
                     value={category.category_id}
