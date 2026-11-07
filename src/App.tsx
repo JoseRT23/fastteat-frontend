@@ -9,7 +9,6 @@ import {
   mockBusinessCatalog,
   mockInvitations,
   mockOrders,
-  mockProducts,
   mockUsers,
 } from "./data/mockData";
 
@@ -146,7 +145,7 @@ function App() {
                         path="dashboard"
                         element={
                           <DashboardPage
-                            products={mockProducts}
+                            products={[]}
                             orders={orders}
                             users={mockUsers}
                           />
@@ -156,7 +155,7 @@ function App() {
                       {/* Productos */}
                       <Route
                         path="products"
-                        element={<ProductsPage products={mockProducts} />}
+                        element={<ProductsPage />}
                       />
 
                       {/* Pedidos */}
@@ -245,7 +244,7 @@ function App() {
                     businessId={selectedBusinessId}
                     products={
                       mockBusinessCatalog[selectedBusinessId ?? "biz-1"] ??
-                      mockProducts
+                      []
                     }
                     onAddToCart={handleAddToCart}
                   />

@@ -1,33 +1,5 @@
 import type { BusinessUser, Invitation, Order, Product, Business } from '../types'
 
-export const mockProducts: Product[] = [
-  {
-    product_id: 'prod-1',
-    sub_category_id: 'sub-6',
-    name: 'Café Latte',
-    description: 'Café con leche espumosa.',
-    current_price: 8500,
-    active: true,
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085',
-  },
-  {
-    product_id: 'prod-2',
-    sub_category_id: 'sub-2',
-    name: 'Tostadas de Jamón',
-    description: 'Tostadas con jamón y queso.',
-    current_price: 12000,
-    active: true,
-  },
-  {
-    product_id: 'prod-3',
-    sub_category_id: 'sub-6',
-    name: 'Smoothie Verde',
-    description: 'Batido natural con espinaca y mango.',
-    current_price: 14000,
-    active: false,
-  },
-]
-
 export const mockBusinessCatalog: Record<string, Product[]> = {
   'biz-1': [
     {
