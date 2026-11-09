@@ -7,7 +7,6 @@ import { useAppContext } from "./context/AppContext";
 
 import {
   mockBusinessCatalog,
-  mockInvitations,
   mockOrders,
   mockUsers,
 } from "./data/mockData";
@@ -172,13 +171,9 @@ function App() {
                       {/* Usuarios */}
                       <Route
                         path="users"
-                        element={
-                          <UsersPage
-                            users={mockUsers}
-                            invitations={mockInvitations}
-                          />
-                        }
+                        element={<UsersPage />}
                       />
+
 
                       {/* Ruta por defecto del negocio */}
                       <Route

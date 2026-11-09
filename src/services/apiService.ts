@@ -1,5 +1,5 @@
 import { apiRequest } from '../api/client'
-import type { Business, Category, Invitation, Order, Product, SubCategory } from '../types'
+import type { Business, BusinessUser, Category, Invitation, Order, Product, SubCategory } from '../types'
 
 export interface LoginResponse {
   token?: string
@@ -151,5 +151,9 @@ export const apiService = {
 
   async getSubCategoriesByCategory(categoryId: string) {
     return apiRequest<SubCategory[]>(`/categories/${categoryId}`)
+  },
+
+  async getBusinessUsers() {
+    return apiRequest<BusinessUser[]>('/business/users')
   },
 }

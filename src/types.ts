@@ -1,4 +1,4 @@
-export type UserRole = 'ADMIN' | 'OWNER' | 'STAFF' | 'EMPLOYEE' | 'CUSTOMER'
+export type UserRole = 'ADMIN' | 'OWNER' | 'STAFF' | 'CUSTOMER'
 
 export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'READY' | 'ACCEPTED' | 'CANCELLED' | 'DELIVERED'
 
