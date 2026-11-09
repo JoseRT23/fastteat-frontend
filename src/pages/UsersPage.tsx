@@ -7,6 +7,7 @@ import type {
   InvitationStatus,
   UserRole,
 } from "../types";
+import { apiService } from "../services/apiService";
 
 interface UsersPageProps {
   users: BusinessUser[];
@@ -27,8 +28,7 @@ interface UserDraft {
 const roleLabelMap: Record<UserRole, string> = {
   ADMIN: "Administrador",
   OWNER: "Propietario",
-  STAFF: "Personal",
-  EMPLOYEE: "Empleado",
+  STAFF: "Colaborador",
   CUSTOMER: "Cliente",
 };
 
@@ -42,33 +42,32 @@ const invitationStatusLabelMap: Record<InvitationStatus, string> = {
 
 const emptyInviteDraft = (): InviteDraft => ({
   email: "",
-  role: "EMPLOYEE",
+  role: "STAFF",
 });
 
 const emptyUserDraft = (): UserDraft => ({
   name: "",
   email: "",
-  role: "EMPLOYEE",
+  role: "STAFF",
 });
 
-export function UsersPage({ users, invitations }: UsersPageProps) {
-  const [userList, setUserList] = useState<BusinessUser[]>(users);
-  const [invitationList, setInvitationList] =
-    useState<Invitation[]>(invitations);
+export function UsersPage() {
+  const [userList, setUserList] = useState<BusinessUser[]>([]);
+  const [invitationList, setInvitationList] = useState<Invitation[]>([]);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inviteDraft, setInviteDraft] =
-    useState<InviteDraft>(emptyInviteDraft());
+  const [inviteDraft, setInviteDraft] = useState<InviteDraft>(emptyInviteDraft());
   const [userDraft, setUserDraft] = useState<UserDraft>(emptyUserDraft());
 
   useEffect(() => {
-    setUserList(users);
-    setInvitationList(invitations);
-  }, [users, invitations]);
-
-  const openCreateUserModal = () => {
-    setIsModalOpen(true);
-  };
+    loadUsers()
+  }, []);
+    
+  const loadUsers = () => {
+    apiService.getBusinessUsers()
+    .then(users => setUserList(users))
+    .catch(error => console.log(error))
+  }
 
   const openEditUserModal = (user: BusinessUser) => {
     setUserDraft({
@@ -106,7 +105,7 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
     closeInviteModal();
   };
 
-  const handleCreateUserSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleUpdateUserSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!userDraft.email || !userDraft.name) return;
@@ -134,9 +133,9 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
               Invitar usuario
             </Button>
 
-            <Button variant="secondary" onClick={openCreateUserModal}>
+            {/* <Button variant="secondary" onClick={openCreateUserModal}>
               Crear usuario
-            </Button>
+            </Button> */}
           </>
         }
       />
@@ -264,10 +263,10 @@ export function UsersPage({ users, invitations }: UsersPageProps) {
 
       <Modal
         open={isModalOpen}
-        title="Crear usuario"
+        title="Editar usuario"
         onClose={closeCreateUserModal}
       >
-        <form className="grid gap-4" onSubmit={handleCreateUserSubmit}>
+        <form className="grid gap-4" onSubmit={handleUpdateUserSubmit}>
           <FormField id="user-name" label="Nombre">
             <input
               className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
