@@ -156,4 +156,8 @@ export const apiService = {
   async getBusinessUsers() {
     return apiRequest<BusinessUser[]>('/business/users')
   },
+
+  async getAllInvitations() {
+    return apiRequest<Invitation[]>('/invitations')
+  }
 }
