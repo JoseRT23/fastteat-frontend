@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "../components/Modal";
 import { Badge, Button, FormField, PageHeader } from "../components/ui";
 import type {
@@ -11,7 +11,7 @@ import { apiService } from "../services/apiService";
 
 interface InviteDraft {
   email: string;
-  role: UserRole;
+  role: UserRole | "";
 }
 
 interface UserDraft {
@@ -37,7 +37,7 @@ const invitationStatusLabelMap: Record<InvitationStatus, string> = {
 
 const emptyInviteDraft = (): InviteDraft => ({
   email: "",
-  role: "STAFF",
+  role: "",
 });
 
 const emptyUserDraft = (): UserDraft => ({
@@ -90,23 +90,23 @@ export function UsersPage() {
     setUserDraft(emptyUserDraft());
   };
 
-  const handleInviteSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleInviteSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!inviteDraft.email) return;
+    if (!inviteDraft.email || !inviteDraft.role) return;
 
     const nextInvitation: Invitation = {
-      invitation_id: `inv-${Date.now()}`,
       email: inviteDraft.email,
       role: inviteDraft.role,
       status: "PENDING",
     };
 
+    await apiService.inviteUser(nextInvitation);
     setInvitationList((current) => [nextInvitation, ...current]);
     closeInviteModal();
   };
 
-  const handleUpdateUserSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleUpdateUserSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!userDraft.email || !userDraft.name) return;
@@ -180,6 +180,12 @@ export function UsersPage() {
           </h2>
 
           <ul className="grid gap-3">
+            {invitationList.length === 0 && (
+              <li className="rounded-md bg-neutral-50 text-center p-3 text-sm text-neutral-500">
+                No hay invitaciones pendientes.
+              </li>
+            )}
+
             {invitationList.map((invitation) => (
               <li
                 key={invitation.invitation_id}
@@ -242,9 +248,10 @@ export function UsersPage() {
                 }))
               }
             >
-              <option value="EMPLOYEE">Empleado</option>
-              <option value="CUSTOMER">Cliente</option>
+              <option value="">Selecciona un Rol</option>
               <option value="ADMIN">Administrador</option>
+              <option value="STAFF">Colaborador</option>
+              <option value="OWNER">Propietario</option>
             </select>
           </FormField>
 
@@ -270,9 +277,10 @@ export function UsersPage() {
         <form className="grid gap-4" onSubmit={handleUpdateUserSubmit}>
           <FormField id="user-name" label="Nombre">
             <input
-              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              className="rounded-md border border-neutral-300 bg-neutral-200 px-3 py-2 text-neutral-600 cursor-not-allowed outline-none"
               id="user-name"
               value={userDraft.name}
+              disabled
               onChange={(event) =>
                 setUserDraft((current) => ({
                   ...current,
@@ -285,10 +293,11 @@ export function UsersPage() {
 
           <FormField id="user-email" label="Email">
             <input
-              className="rounded-md border border-neutral-200 px-3 py-2 outline-none transition focus:border-primary-500"
+              className="rounded-md border border-neutral-300 bg-neutral-200 px-3 py-2 text-neutral-600 cursor-not-allowed outline-none"
               id="user-email"
               type="email"
               value={userDraft.email}
+              disabled
               onChange={(event) =>
                 setUserDraft((current) => ({
                   ...current,
@@ -311,9 +320,10 @@ export function UsersPage() {
                 }))
               }
             >
-              <option value="EMPLOYEE">Empleado</option>
-              <option value="CUSTOMER">Cliente</option>
+              <option value="">Selecciona un Rol</option>
               <option value="ADMIN">Administrador</option>
+              <option value="STAFF">Colaborador</option>
+              <option value="OWNER">Propietario</option>
             </select>
           </FormField>
 
