@@ -9,11 +9,6 @@ import type {
 } from "../types";
 import { apiService } from "../services/apiService";
 
-interface UsersPageProps {
-  users: BusinessUser[];
-  invitations: Invitation[];
-}
-
 interface InviteDraft {
   email: string;
   role: UserRole;
@@ -61,6 +56,7 @@ export function UsersPage() {
 
   useEffect(() => {
     loadUsers()
+    loadInvitations();
   }, []);
     
   const loadUsers = () => {
@@ -68,6 +64,12 @@ export function UsersPage() {
     .then(users => setUserList(users))
     .catch(error => console.log(error))
   }
+
+  const loadInvitations = () => {
+    apiService.getAllInvitations()
+      .then((invitations) => setInvitationList(invitations))
+      .catch((error) => console.log(error));
+  };
 
   const openEditUserModal = (user: BusinessUser) => {
     setUserDraft({
@@ -101,7 +103,6 @@ export function UsersPage() {
     };
 
     setInvitationList((current) => [nextInvitation, ...current]);
-
     closeInviteModal();
   };
 
