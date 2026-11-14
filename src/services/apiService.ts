@@ -1,5 +1,5 @@
 import { apiRequest } from '../api/client'
-import type { Business, BusinessUser, Category, Invitation, Order, Product, SubCategory } from '../types'
+import type { Business, BusinessUser, Category, Invitation, Order, Product, SubCategory, UserRole } from '../types'
 
 export interface LoginResponse {
   token?: string
@@ -157,7 +157,16 @@ export const apiService = {
     return apiRequest<BusinessUser[]>('/business/users')
   },
 
+  async updateBusinessUserRole(businessUserId: string, role: UserRole) {
+    return apiRequest<BusinessUser[]>(`/business/users/${businessUserId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({role: role})
+      }
+    )
+  },
+
   async getAllInvitations() {
     return apiRequest<Invitation[]>('/invitations')
-  }
+  },
+
 }

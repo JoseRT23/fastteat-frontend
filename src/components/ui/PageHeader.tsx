@@ -30,7 +30,7 @@ export function PageHeader({
       </div>
 
       {actions && (
-        <div className="w-full min-w-0 md:w-80 md:shrink-0">{actions}</div>
+        <div className="w-full min-w-0 md:w-auto md:shrink-0">{actions}</div>
       )}
     </div>
   );

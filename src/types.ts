@@ -48,7 +48,7 @@ export interface BusinessUser {
 }
 
 export interface Invitation {
-  invitation_id?: string
+  business_invitation_id?: string
   email: string
   role: UserRole
   status: InvitationStatus
