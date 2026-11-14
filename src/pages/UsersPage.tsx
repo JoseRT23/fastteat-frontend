@@ -15,6 +15,7 @@ interface InviteDraft {
 }
 
 interface UserDraft {
+  id?: string;
   name: string;
   email: string;
   role: UserRole;
@@ -55,7 +56,7 @@ export function UsersPage() {
   const [userDraft, setUserDraft] = useState<UserDraft>(emptyUserDraft());
 
   useEffect(() => {
-    loadUsers()
+    loadUsers();
     loadInvitations();
   }, []);
     
@@ -73,6 +74,7 @@ export function UsersPage() {
 
   const openEditUserModal = (user: BusinessUser) => {
     setUserDraft({
+      id: user.user_id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -81,11 +83,13 @@ export function UsersPage() {
   };
 
   const closeInviteModal = () => {
+    loadInvitations();
     setInviteModalOpen(false);
     setInviteDraft(emptyInviteDraft());
   };
 
   const closeCreateUserModal = () => {
+    loadUsers();
     setIsModalOpen(false);
     setUserDraft(emptyUserDraft());
   };
@@ -102,25 +106,23 @@ export function UsersPage() {
     };
 
     await apiService.inviteUser(nextInvitation);
-    setInvitationList((current) => [nextInvitation, ...current]);
     closeInviteModal();
   };
 
-  const handleUpdateUserSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleUpdateUserSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (!userDraft.email || !userDraft.name) return;
+    
+    if (!userDraft.email || !userDraft.name || !userDraft.id) return;
 
     const nextUser: BusinessUser = {
-      user_id: `usr-${Date.now()}`,
+      user_id: userDraft.id,
       name: userDraft.name,
       email: userDraft.email,
       role: userDraft.role,
       active: true,
     };
 
-    setUserList((current) => [nextUser, ...current]);
-
+    await apiService.updateBusinessUserRole(nextUser.user_id, nextUser.role);
     closeCreateUserModal();
   };
 
@@ -187,8 +189,7 @@ export function UsersPage() {
             )}
 
             {invitationList.map((invitation) => (
-              <li
-                key={invitation.invitation_id}
+              <li key={invitation.business_invitation_id}
                 className="flex items-center justify-between gap-3 rounded-md bg-neutral-50 p-3"
               >
                 <div>
@@ -281,13 +282,6 @@ export function UsersPage() {
               id="user-name"
               value={userDraft.name}
               disabled
-              onChange={(event) =>
-                setUserDraft((current) => ({
-                  ...current,
-                  name: event.target.value,
-                }))
-              }
-              required
             />
           </FormField>
 
@@ -298,13 +292,6 @@ export function UsersPage() {
               type="email"
               value={userDraft.email}
               disabled
-              onChange={(event) =>
-                setUserDraft((current) => ({
-                  ...current,
-                  email: event.target.value,
-                }))
-              }
-              required
             />
           </FormField>
 
